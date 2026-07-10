@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinh tế Tư nhân & Định hướng XHCN · Nhóm Untitled</title>
+<meta name="description" content="Phân tích sự phát triển kinh tế tư nhân và vai trò trong việc thực hiện mục tiêu xã hội theo định hướng XHCN. KTCT Mác–Lênin, Chương 5. Nhóm Untitled.">
+<style>
+  :root{
+    --bg:#faf6ef; --bg2:#f3ece0; --ink:#17130f; --muted:#6b6155; --line:#e4dccf;
+    --red:#b01e2e; --red-d:#8a1624; --gold:#c69a3a; --green:#2e7d5b; --blue:#2f6fb0;
+    --card:#ffffff; --shadow:0 18px 48px -24px rgba(40,25,10,.35);
+    --serif:Cambria,"Times New Roman",Georgia,serif;
+    --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --wrap:1080px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);
+    line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{line-height:1.14;margin:0;font-weight:800;letter-spacing:-.01em}
+  p{margin:0 0 1em}
+  a{color:var(--red)}
+  b,strong{font-weight:700}
+  ::selection{background:var(--gold);color:#1a1200}
+
+  /* ---------- top progress + nav ---------- */
+  #prog{position:fixed;top:0;left:0;height:4px;width:0;z-index:120;
+    background:linear-gradient(90deg,var(--red),var(--gold));transition:width .1s linear}
+  #dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:100;
+    display:flex;flex-direction:column;gap:12px}
+  #dots a{width:11px;height:11px;border-radius:50%;background:#00000022;border:1px solid #0000001a;
+    display:block;transition:.25s;position:relative}
+  #dots a.on{background:var(--red);transform:scale(1.35)}
+  #dots a span{position:absolute;right:20px;top:50%;transform:translateY(-50%);white-space:nowrap;
+    font-size:11px;font-weight:700;background:var(--ink);color:#fff;padding:3px 9px;border-radius:6px;
+    opacity:0;pointer-events:none;transition:.2s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:860px){#dots{display:none}}
+
+  /* ---------- layout ---------- */
+  section{padding:96px 24px;position:relative}
+  .wrap{max-width:var(--wrap);margin:0 auto}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:18px}
+  .kicker::before{content:"";width:26px;height:2px;background:var(--red)}
+  .lead{font-size:clamp(18px,2.3vw,21px);color:var(--muted);max-width:62ch}
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .delay1{transition-delay:.08s}.delay2{transition-delay:.16s}.delay3{transition-delay:.24s}.delay4{transition-delay:.32s}
+
+  /* ---------- hero ---------- */
+  #hero{min-height:100vh;display:flex;align-items:center;overflow:hidden;
+    background:radial-gradient(1100px 620px at 82% -8%,#f7e6c8 0%,transparent 55%),
+               radial-gradient(900px 560px at 8% 108%,#f3d9db 0%,transparent 52%),var(--bg)}
+  .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;z-index:0;animation:drift 18s ease-in-out infinite alternate}
+  .blob.a{width:360px;height:360px;background:#e7b7bd;top:-80px;right:6%}
+  .blob.b{width:300px;height:300px;background:#e9d29a;bottom:-60px;left:2%;animation-delay:-6s}
+  @keyframes drift{to{transform:translate(30px,40px) scale(1.12)}}
+  #hero .wrap{position:relative;z-index:2}
+  .h-kick{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red);
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+  .h-kick .grp{background:var(--ink);color:#fff;padding:4px 12px;border-radius:20px;letter-spacing:.12em}
+  #hero h1{font-weight:800;letter-spacing:-.03em;margin-bottom:10px}
+  #hero h1 .t-lg{font-size:clamp(40px,7.4vw,86px);color:var(--red);line-height:1.02;display:inline-block}
+  #hero h1 .t-sm{font-size:clamp(22px,3.4vw,40px);color:var(--ink);font-weight:700;letter-spacing:-.01em}
+  .h-sub{font-family:var(--serif);font-style:italic;font-size:clamp(17px,2.4vw,22px);color:var(--muted);
+    max-width:60ch;margin:24px 0 40px}
+  .scrollcue{display:inline-flex;align-items:center;gap:12px;font-size:13px;font-weight:700;color:var(--muted);
+    text-decoration:none;letter-spacing:.02em}
+  .scrollcue .m{width:24px;height:38px;border:2px solid var(--muted);border-radius:14px;position:relative}
+  .scrollcue .m::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:7px;border-radius:2px;
+    background:var(--muted);transform:translateX(-50%);animation:wheel 1.5s infinite}
+  @keyframes wheel{0%{opacity:0;top:7px}40%{opacity:1}100%{opacity:0;top:18px}}
+
+  /* ---------- driving question ---------- */
+  #q0{background:linear-gradient(180deg,var(--bg),var(--bg2))}
+  .bigq{font-family:var(--serif);font-size:clamp(26px,4.6vw,50px);font-weight:700;line-height:1.3;letter-spacing:-.01em}
+  .bigq .hl{color:var(--red)}
+  .bigq .ul{border-bottom:3px solid var(--gold);padding-bottom:1px}
+
+  /* ---------- two faces of the market economy ---------- */
+  .split{display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-top:40px;border-radius:20px;overflow:hidden;
+    box-shadow:var(--shadow);border:1px solid var(--line)}
+  .face{padding:32px 30px;background:var(--card)}
+  .face.market{background:linear-gradient(160deg,#fff,#fbf3e6)}
+  .face.orient{background:linear-gradient(160deg,#f2f8f4,#eaf3ee)}
+  .face .tg{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+  .face.market .tg{color:var(--gold)} .face.orient .tg{color:var(--green)}
+  .face h3{font-size:21px;margin:8px 0 6px}
+  .face ul{margin:16px 0 0;padding-left:18px;color:var(--muted);font-size:15px}
+  .face li{margin-bottom:9px}
+  .plus{display:flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;font-size:30px;font-weight:800;padding:0 18px}
+  @media(max-width:760px){.split{grid-template-columns:1fr}.plus{padding:12px}}
+  .defbox{margin-top:36px;background:var(--card);border-left:5px solid var(--red);border-radius:0 16px 16px 0;
+    padding:26px 30px;box-shadow:var(--shadow);font-family:var(--serif);font-size:clamp(17px,2.2vw,21px);font-style:italic}
+  .defbox .src{display:block;margin-top:14px;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);font-weight:700}
+
+  /* ---------- sectors ---------- */
+  .sectors{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:38px}
+  @media(max-width:820px){.sectors{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:460px){.sectors{grid-template-columns:1fr}}
+  .sector{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 20px;
+    box-shadow:0 10px 30px -22px rgba(0,0,0,.4);transition:.25s;position:relative;overflow:hidden}
+  .sector:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+  .sector .sn{font-size:13px;font-weight:800;color:var(--red);letter-spacing:.12em}
+  .sector h3{font-size:16.5px;margin:10px 0 6px}
+  .sector p{font-size:13.5px;color:var(--muted);margin:0}
+  .sector .tag{position:absolute;top:16px;right:14px;font-size:10px;font-weight:800;letter-spacing:.06em;
+    padding:3px 9px;border-radius:20px;background:var(--bg2);color:var(--muted)}
+  .sector.lead-s{border:2px solid var(--red);box-shadow:0 20px 44px -22px rgba(176,30,46,.5)}
+  .sector.lead-s .tag{background:var(--red);color:#fff}
+  .sector.state-s{border-color:#cbb9a0}
+  .sector.state-s .sn{color:var(--ink)}
+  .sector.state-s .tag{background:var(--ink);color:#fff}
+
+  /* ---------- goal strip ---------- */
+  .goalflow{display:flex;flex-wrap:wrap;align-items:stretch;gap:14px;margin-top:36px}
+  .gstep{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;
+    box-shadow:0 10px 26px -22px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:6px}
+  .gstep .n{font-size:12px;font-weight:800;color:var(--red);letter-spacing:.1em}
+  .gstep b{font-size:15.5px}
+  .gstep small{color:var(--muted);font-size:13px}
+  .gstep.final{background:linear-gradient(160deg,#b01e2e,#8a1624);color:#fff;border:0}
+  .gstep.final .n,.gstep.final small{color:#f7d7c9}
+
+  /* ---------- Vingroup case ---------- */
+  #vin{background:linear-gradient(180deg,var(--bg2),var(--bg))}
+  .vhead{display:grid;grid-template-columns:1.3fr 1fr;gap:36px;align-items:center}
+  @media(max-width:820px){.vhead{grid-template-columns:1fr}}
+  .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center;
+    box-shadow:0 10px 30px -22px rgba(0,0,0,.4)}
+  .stat .num{font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--red);line-height:1}
+  .stat .lbl{font-size:12.5px;color:var(--muted);margin-top:8px;font-weight:600}
+  .pillars{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .pillar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:13.5px;font-weight:700}
+  .pillar span{color:var(--muted);font-weight:500}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:44px}
+  .tab{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:11px 20px;font-size:14.5px;
+    font-weight:700;cursor:pointer;transition:.2s;color:var(--muted);font-family:inherit}
+  .tab:hover{border-color:var(--red)}
+  .tab.on{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 10px 24px -12px rgba(176,30,46,.6)}
+  .panel{display:none;margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:34px;box-shadow:var(--shadow);animation:fade .4s ease}
+  .panel.on{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:start}
+  @media(max-width:680px){.panel.on{grid-template-columns:1fr}}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}}
+  .panel .pnum{font-size:54px;font-weight:800;color:var(--red);line-height:.9;font-variant-numeric:tabular-nums;
+    border-right:2px solid var(--line);padding-right:26px}
+  @media(max-width:680px){.panel .pnum{border-right:0;padding-right:0}}
+  .panel h3{font-size:22px;color:var(--red);margin-bottom:10px}
+  .panel .arrow{margin:14px 0;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--green);
+    font-size:14.5px}
+  .panel .arrow b{color:var(--green)}
+  .srctag{display:inline-block;margin-top:12px;font-size:12px;color:var(--muted);background:var(--bg2);
+    padding:4px 12px;border-radius:20px;font-weight:700}
+
+  /* ---------- debate ---------- */
+  #debate{background:var(--ink);color:#f3ede2}
+  #debate .kicker{color:var(--gold)}#debate .kicker::before{background:var(--gold)}
+  #debate h2{color:#fff}
+  #debate .lead{color:#c9bfb0}
+  .quote{font-family:var(--serif);font-size:clamp(20px,3vw,30px);font-style:italic;line-height:1.42;
+    border-left:4px solid var(--gold);padding:6px 0 6px 24px;margin:34px 0}
+  .quote cite{display:block;font-family:var(--sans);font-size:13px;font-style:normal;color:#b7ab99;margin-top:12px;font-weight:700}
+  .aspects{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  @media(max-width:760px){.aspects{grid-template-columns:1fr}}
+  .aspect{background:#221c15;border:1px solid #3a3125;border-radius:16px;padding:24px}
+  .aspect .n{font-size:26px;font-weight:800;color:var(--gold)}
+  .aspect h3{font-size:17px;margin:10px 0 8px;color:#fff}
+  .aspect p{font-size:14px;color:#c1b6a6;margin:0}
+
+  /* ---------- profit vs TNXH balance ---------- */
+  .balwrap{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:34px 24px;
+    box-shadow:var(--shadow);text-align:center}
+  .baltoggle{display:inline-flex;background:var(--bg2);border-radius:30px;padding:5px;gap:4px;margin:0 0 6px}
+  .baltoggle button{border:0;background:transparent;padding:10px 18px;border-radius:24px;font-weight:800;font-size:14px;
+    cursor:pointer;color:var(--muted);font-family:inherit;transition:.2s}
+  .baltoggle button.on{background:#fff;color:var(--ink);box-shadow:0 4px 14px -6px rgba(0,0,0,.4)}
+  .beam-stage{height:250px;position:relative;margin:8px auto 4px;max-width:600px}
+  .fulcrum{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:0;height:0;
+    border-left:30px solid transparent;border-right:30px solid transparent;border-bottom:150px solid var(--ink)}
+  .fulcrum::after{content:"";position:absolute;left:-46px;top:150px;width:92px;height:12px;border-radius:4px;background:var(--ink)}
+  .beam{position:absolute;left:50%;top:94px;width:460px;max-width:84vw;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--gold),var(--red));transform:translateX(-50%) rotate(var(--tilt,0deg));
+    transform-origin:center center;transition:transform .65s cubic-bezier(.45,1.3,.4,1)}
+  .beam::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:2px solid var(--card);transform:translate(-50%,-50%)}
+  .arm{position:absolute;top:50%;width:0;height:0}
+  .arm.left{left:10px}.arm.right{right:10px}
+  .pan{position:absolute;top:0;left:0;width:132px;margin-left:-66px;transform-origin:top center;
+    transform:rotate(calc(-1 * var(--tilt,0deg)));transition:transform .65s cubic-bezier(.45,1.3,.4,1);
+    display:flex;flex-direction:column;align-items:center}
+  .pan .str{width:2px;height:20px;background:#cdbfa6}
+  .pan .disc{background:var(--bg2);border:2px solid var(--line);border-radius:12px;padding:9px 14px;
+    font-weight:800;font-size:13px;white-space:nowrap}
+  .arm.left .disc{color:var(--gold)}.arm.right .disc{color:var(--green)}
+  #balmsg{font-size:15.5px;max-width:62ch;margin:14px auto 0;color:var(--muted);min-height:70px}
+  #balmsg b{color:var(--ink)}
+  .balpoints{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;text-align:left}
+  @media(max-width:760px){.balpoints{grid-template-columns:1fr}}
+  .balpoint{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;
+    box-shadow:0 10px 30px -22px rgba(0,0,0,.4)}
+  .balpoint .bn{font-size:11.5px;font-weight:800;letter-spacing:.1em;color:var(--red);text-transform:uppercase}
+  .balpoint h4{font-size:15.5px;margin:8px 0 6px}
+  .balpoint p{font-size:13.5px;color:var(--muted);margin:0}
+
+  /* ---------- conclusion ---------- */
+  #concl{background:linear-gradient(160deg,#b01e2e,#7d1420);color:#fff;text-align:center}
+  #concl h2{color:#fff;font-size:clamp(28px,4.6vw,48px)}
+  #concl .lead{color:#f6d9cf;margin:22px auto 0}
+  #concl .open{margin-top:34px;font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.6vw,24px);
+    background:#ffffff18;border:1px solid #ffffff33;border-radius:18px;padding:24px 28px;display:inline-block}
+
+  /* ---------- quiz ---------- */
+  #quiz{background:var(--bg2)}
+  .quizcard{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+    padding:34px;max-width:760px;margin:34px auto 0}
+  .qbar{height:7px;background:var(--bg2);border-radius:6px;overflow:hidden;margin-bottom:22px}
+  .qbar>div{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .4s}
+  .qnum{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--red);text-transform:uppercase}
+  .qtext{font-size:clamp(18px,2.6vw,23px);font-weight:800;margin:8px 0 22px}
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .qopt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:15px 18px;
+    font-size:15.5px;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit;color:var(--ink);display:flex;gap:12px;align-items:center}
+  .qopt:hover:not(:disabled){border-color:var(--red);transform:translateX(4px)}
+  .qopt .key{width:26px;height:26px;flex:0 0 26px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;
+    justify-content:center;font-weight:800;font-size:13px}
+  .qopt.correct{border-color:var(--green);background:#eaf6ef}
+  .qopt.correct .key{background:var(--green);color:#fff}
+  .qopt.wrong{border-color:var(--red);background:#fbeced}
+  .qopt.wrong .key{background:var(--red);color:#fff}
+  .qopt:disabled{cursor:default}
+  #qfeedback{margin-top:18px;font-size:14.5px;padding:14px 18px;border-radius:12px;display:none}
+  #qfeedback.show{display:block}
+  #qfeedback.ok{background:#eaf6ef;color:var(--green)}
+  #qfeedback.no{background:#fbeced;color:var(--red-d)}
+  .qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+  .qscore{font-weight:800}
+  .qnext{background:var(--ink);color:#fff;border:0;border-radius:12px;padding:12px 22px;font-weight:800;cursor:pointer;
+    font-family:inherit;font-size:14.5px;opacity:.35;pointer-events:none;transition:.2s}
+  .qnext.on{opacity:1;pointer-events:auto}
+  .qresult{text-align:center}
+  .qresult .big{font-size:56px;font-weight:800;color:var(--red)}
+
+  /* ---------- game ---------- */
+  #game{background:#0b0f14;color:#e6edf3}
+  #game .kicker{color:var(--gold)}#game .kicker::before{background:var(--gold)}
+  #game h2{color:#fff;font-size:clamp(28px,4.4vw,46px)}
+  #game .lead{color:#9aa6b2;max-width:66ch}
+  .gameframe{margin-top:32px;border-radius:20px;overflow:hidden;border:1px solid #24303c;
+    box-shadow:0 40px 90px -40px #000;position:relative;background:#0b0f14}
+  .gameframe iframe{width:100%;height:min(86vh,760px);border:0;display:block}
+  .gtoolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+    padding:14px 18px;background:#111922;border-bottom:1px solid #24303c}
+  .gtoolbar .lbl{font-weight:800;font-size:14px;letter-spacing:.04em}
+  .gtoolbar .lbl span{color:var(--gold)}
+  .gbtns{display:flex;gap:10px;flex-wrap:wrap}
+  .gbtn{background:#1b242f;color:#e6edf3;border:1px solid #2c3947;border-radius:10px;padding:9px 15px;
+    font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+  .gbtn:hover{border-color:var(--gold);color:#fff}
+  .gbtn.play{background:linear-gradient(180deg,#2ea043,#1f7a33);border:0;color:#fff}
+  .gnote{margin-top:16px;font-size:13px;color:#8b98a5}
+
+  /* ---------- references / footer ---------- */
+  #refs{background:var(--bg)}
+  .reflist{margin-top:28px;display:grid;gap:12px}
+  .ref{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;font-size:14px;
+    display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+  .ref .rn{font-weight:800;color:var(--red);font-variant-numeric:tabular-nums}
+  .ref a{word-break:break-all;font-size:13px}
+  .ref .v{display:inline-block;margin-top:4px;font-size:11.5px;font-weight:800;color:var(--green);
+    background:#eaf6ef;padding:2px 8px;border-radius:20px}
+  details.ai{margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 24px;box-shadow:var(--shadow)}
+  details.ai summary{cursor:pointer;font-weight:800;font-size:16px;padding:16px 0;list-style:none;display:flex;align-items:center;gap:10px}
+  details.ai summary::-webkit-details-marker{display:none}
+  details.ai summary::before{content:"▸";color:var(--red);transition:.2s}
+  details.ai[open] summary::before{transform:rotate(90deg)}
+  details.ai .body{padding:0 0 20px;color:var(--muted);font-size:14.5px}
+  footer{background:var(--ink);color:#c9bfb0;text-align:center;padding:56px 24px}
+  footer .grp{font-family:var(--serif);font-size:34px;color:#fff;font-style:italic}
+  footer .members{margin-top:14px;font-size:14px}
+  footer .small{margin-top:20px;font-size:12.5px;color:#8a8073}
+
+  .sec-h2{font-size:clamp(28px,4.4vw,46px);margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- ===================== HERO ===================== -->
+<section id="hero">
+  <div class="blob a"></div><div class="blob b"></div>
+  <div class="wrap">
+    <div class="h-kick reveal in"><span class="grp">NHÓM UNTITLED</span> KTCT MÁC–LÊNIN · CHƯƠNG 5</div>
+    <h1 class="reveal in delay1">
+      <span class="t-sm">Kinh tế</span> <span class="t-lg">Tư nhân</span><br>
+      <span class="t-sm">&amp; Định hướng</span><br>
+      <span class="t-lg">Xã hội Chủ nghĩa</span>
+    </h1>
+    <p class="h-sub reveal in delay2">Khi một doanh nghiệp tư nhân theo đuổi lợi nhuận, liệu nó có thể đồng thời phục vụ mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh”?</p>
+    <a href="#q0" class="scrollcue reveal in delay4"><span class="m"></span> Cuộn xuống để bắt đầu</a>
+  </div>
+</section>
+
+<!-- ===================== DRIVING QUESTION ===================== -->
+<section id="q0">
+  <div class="wrap">
+    <div class="kicker reveal">Câu hỏi cốt lõi</div>
+    <p class="bigq reveal delay1">Phân tích sự phát triển của <span class="hl">kinh tế tư nhân</span> và vai trò của nó trong việc thực hiện <span class="ul">mục tiêu xã hội</span> theo định hướng xã hội chủ nghĩa.</p>
+  </div>
+</section>
+
+<!-- ===================== KHÁI NIỆM ===================== -->
+<section id="concept">
+  <div class="wrap">
+    <div class="kicker reveal">Nền tảng lý luận</div>
+    <h2 class="sec-h2 reveal delay1">Kinh tế thị trường định hướng XHCN là gì?</h2>
+    <p class="lead reveal delay2">Nó gắn liền <b>phương thức vận hành</b> theo quy luật thị trường với <b>mục tiêu hướng tới</b> là các giá trị xã hội do Nhà nước điều tiết.</p>
+
+    <div class="split reveal delay2">
+      <div class="face market">
+        <div class="tg">Phương thức vận hành</div>
+        <h3>Cơ chế thị trường</h3>
+        <ul>
+          <li>Cạnh tranh, tự do kinh doanh</li>
+          <li>Giá cả do <b>cung – cầu</b> quyết định</li>
+          <li>Thúc đẩy phát triển, hiệu quả, đổi mới</li>
+        </ul>
+      </div>
+      <div class="plus">+</div>
+      <div class="face orient">
+        <div class="tg">Mục tiêu hướng tới</div>
+        <h3>Định hướng XHCN</h3>
+        <ul>
+          <li><b>Nhà nước điều tiết</b>, quản lý</li>
+          <li>Hướng đến hệ giá trị toàn diện của xã hội <span style="color:var(--muted);font-weight:400">(dân giàu, nước mạnh, dân chủ, công bằng, văn minh)</span></li>
+          <li>Do <b>Đảng Cộng sản Việt Nam</b> lãnh đạo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="defbox reveal">
+      “Kinh tế thị trường định hướng xã hội chủ nghĩa là nền kinh tế vận hành theo các quy luật của thị trường, đồng thời góp phần hướng tới từng bước xác lập một xã hội mà ở đó <b>dân giàu, nước mạnh, dân chủ, công bằng, văn minh</b>; có sự điều tiết của Nhà nước do Đảng Cộng sản Việt Nam lãnh đạo.”
+      <span class="src">Giáo trình Kinh tế chính trị Mác – Lênin, tr. 108</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THÀNH PHẦN KINH TẾ ===================== -->
+<section id="sectors">
+  <div class="wrap">
+    <div class="kicker reveal">Vị trí của kinh tế tư nhân</div>
+    <h2 class="sec-h2 reveal delay1">Các thành phần kinh tế</h2>
+    <p class="lead reveal delay2">Kinh tế nhà nước giữ vai trò <b>chủ đạo</b>, còn <b>kinh tế tư nhân là một động lực quan trọng</b> của nền kinh tế, được Nhà nước khuyến khích phát triển ở hầu hết các lĩnh vực.</p>
+
+    <div class="sectors">
+      <div class="sector state-s reveal"><span class="tag">Chủ đạo</span><div class="sn">01</div><h3>Kinh tế nhà nước</h3><p>Giữ vai trò chủ đạo, định hướng và điều tiết nền kinh tế.</p></div>
+      <div class="sector reveal delay1"><span class="tag">Hợp tác</span><div class="sn">02</div><h3>Kinh tế tập thể</h3><p>Hợp tác xã, liên kết sản xuất giữa các thành viên.</p></div>
+      <div class="sector lead-s reveal delay2"><span class="tag">Động lực quan trọng</span><div class="sn">03</div><h3>Kinh tế tư nhân</h3><p>Một động lực quan trọng; thúc đẩy hình thành các tập đoàn mạnh, công nghệ &amp; quản lý hiện đại.</p></div>
+      <div class="sector reveal delay3"><span class="tag">FDI</span><div class="sn">04</div><h3>Vốn đầu tư nước ngoài</h3><p>Bổ sung vốn, công nghệ và kết nối thị trường quốc tế.</p></div>
+    </div>
+    <p class="lead reveal" style="margin-top:24px;font-size:15px">Nhà nước khuyến khích phát triển kinh tế tư nhân để hình thành các tập đoàn kinh tế tư nhân mạnh, có trình độ công nghệ và quản lý hiện đại. <span style="color:var(--muted)">(Giáo trình KTCT Mác–Lênin, tr. 114, 121; Nghị quyết 10‑NQ/TW, 2017)</span></p>
+  </div>
+</section>
+
+<!-- ===================== MỤC TIÊU ===================== -->
+<section id="goal">
+  <div class="wrap">
+    <div class="kicker reveal">Không chỉ là lợi nhuận</div>
+    <h2 class="sec-h2 reveal delay1">Mục tiêu của kinh tế tư nhân trong định hướng XHCN</h2>
+    <p class="lead reveal delay2">Mục tiêu không dừng ở tăng doanh thu, mà hướng tới quan hệ sản xuất tiến bộ, tiến bộ &amp; công bằng xã hội, và cuối cùng là nâng cao chất lượng cuộc sống người dân.</p>
+    <div class="goalflow">
+      <div class="gstep reveal"><span class="n">KINH TẾ</span><b>Tăng trưởng &amp; tích lũy</b><small>Doanh thu, vốn, năng suất: điểm khởi đầu tất yếu, chưa phải đích đến.</small></div>
+      <div class="gstep reveal delay1"><span class="n">THỂ CHẾ</span><b>Quan hệ sản xuất tiến bộ</b><small>Sở hữu, quản lý, phân phối vận hành đúng pháp luật &amp; định hướng XHCN.</small></div>
+      <div class="gstep reveal delay2"><span class="n">CON NGƯỜI</span><b>Tiến bộ &amp; công bằng xã hội</b><small>Việc làm, an sinh, phúc lợi: chất lượng sống người dân được nâng cao.</small></div>
+      <div class="gstep final reveal delay3"><span class="n">ĐÍCH ĐẾN</span><b>Dân giàu, nước mạnh</b><small>Dân chủ, công bằng, văn minh.</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== VINGROUP CASE ===================== -->
+<section id="vin">
+  <div class="wrap">
+    <div class="kicker reveal">Minh chứng thực tiễn</div>
+    <div class="vhead">
+      <div>
+        <h2 class="sec-h2 reveal delay1">Vingroup: tư nhân phục vụ mục tiêu xã hội</h2>
+        <p class="lead reveal delay2">Đây là doanh nghiệp tư nhân <b>lớn nhất Việt Nam</b> năm 2025, giữ vị trí dẫn đầu bảng xếp hạng doanh nghiệp tư nhân. Tập đoàn hoạt động đa ngành với các trụ cột chính:</p>
+        <div class="pillars reveal delay2">
+          <span class="pillar">Công nghệ – Công nghiệp <span>· VinFast</span></span>
+          <span class="pillar">Bất động sản <span>· Vinhomes, Vincom</span></span>
+          <span class="pillar">Thương mại – Dịch vụ <span>· Vinpearl, Vinmec, Vinschool</span></span>
+        </div>
+      </div>
+      <div class="statgrid reveal delay3">
+        <div class="stat"><div class="num">#1</div><div class="lbl">DN tư nhân lớn nhất VN 2025</div></div>
+        <div class="stat"><div class="num">70%</div><div class="lbl">Hỗ trợ phí điều trị tại Vinmec (Quỹ Thiện Tâm)</div></div>
+        <div class="stat"><div class="num">23.3</div><div class="lbl">Điểm ESG, top 10 hãng xe toàn cầu</div></div>
+        <div class="stat"><div class="num">10⁴+</div><div class="lbl">Việc làm tạo ra trên toàn quốc</div></div>
+      </div>
+    </div>
+
+    <p class="lead reveal" style="margin-top:6px">Vingroup đã góp phần thực hiện mục tiêu xã hội trên bốn phương diện (bấm để xem chi tiết):</p>
+    <div class="tabs reveal" id="vtabs">
+      <button class="tab on" data-p="edu">Giáo dục</button>
+      <button class="tab" data-p="health">Y tế</button>
+      <button class="tab" data-p="green">Phát triển bền vững</button>
+      <button class="tab" data-p="jobs">Việc làm</button>
+    </div>
+
+    <div class="panel on" id="p-edu">
+      <div class="pnum">01</div>
+      <div>
+        <h3>Giáo dục: đào tạo nguồn nhân lực chất lượng cao</h3>
+        <p>Vingroup đầu tư vào <b>VinUni</b> và <b>Vinschool</b>, nâng cao chất lượng giáo dục và đào tạo nguồn nhân lực chất lượng cao; hợp tác với nhiều trường đại học quốc tế để đào tạo theo tiêu chuẩn quốc tế.</p>
+        <div class="arrow">Đầu tư giáo dục → nâng cao tri thức &amp; năng suất lao động → <b>góp phần phát triển con người</b> theo định hướng XHCN.</div>
+        <span class="srctag">Nguồn: VinUni (2025)</span>
+      </div>
+    </div>
+    <div class="panel" id="p-health">
+      <div class="pnum">02</div>
+      <div>
+        <h3>Y tế: nâng cao phúc lợi, giảm gánh nặng cho y tế công</h3>
+        <p>Hệ thống bệnh viện <b>Vinmec</b> đầu tư mạnh vào cơ sở vật chất, nâng cao chất lượng khám chữa bệnh. Cùng <b>Quỹ Thiện Tâm</b>, Vinmec triển khai chương trình hỗ trợ <b>tới 70% chi phí điều trị</b> tim mạch, ung bướu cho người bệnh.</p>
+        <div class="arrow">Không chỉ tạo lợi nhuận mà còn <b>nâng cao phúc lợi và chất lượng sống</b> của người dân và xã hội.</div>
+        <span class="srctag">Nguồn: Vinmec International Hospital (2024)</span>
+      </div>
+    </div>
+    <div class="panel" id="p-green">
+      <div class="pnum">03</div>
+      <div>
+        <h3>Phát triển bền vững: giao thông xanh</h3>
+        <p>Vingroup cho ra đời xe điện <b>VinFast</b> và công bố nhận đánh giá <b>ESG</b> (Môi trường – Xã hội – Quản trị) từ <b>Morningstar Sustainalytics</b> năm 2022, đạt điểm 23.3 (mức rủi ro trung bình), thuộc top 10 hãng ô tô có xếp hạng ESG cao nhất thế giới.</p>
+        <div class="arrow">Thay đổi thói quen tiêu dùng bằng năng lượng xanh, giảm phát thải → <b>phát triển bền vững cho xã hội</b>.</div>
+        <span class="srctag">Nguồn: VinFast (2022) · Sustainalytics</span>
+      </div>
+    </div>
+    <div class="panel" id="p-jobs">
+      <div class="pnum">04</div>
+      <div>
+        <h3>Việc làm: tăng thu nhập, ổn định xã hội</h3>
+        <p>Vingroup tạo ra <b>hàng chục nghìn việc làm</b> trên toàn quốc, với đa dạng vị trí trong nhiều lĩnh vực khác nhau.</p>
+        <div class="arrow">Người dân có việc làm → tăng thu nhập, ổn định xã hội → <b>phù hợp mục tiêu dân giàu, nước mạnh</b>.</div>
+        <span class="srctag">Nguồn: Mariana Nguyen (2026)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== VIETTEL · ĐỐI CHIẾU ===================== -->
+<section id="viettel">
+  <div class="wrap">
+    <div class="kicker reveal">Đối chiếu · Kinh tế nhà nước</div>
+    <h2 class="sec-h2 reveal delay1">Viettel: viễn thông vùng xa</h2>
+    <p class="lead reveal delay2">Định hướng XHCN là mục tiêu chung của <b>mọi thành phần kinh tế</b>, không riêng tư nhân. Là doanh nghiệp <b>kinh tế nhà nước</b> giữ vai trò chủ đạo, Viettel thực hiện <b>trực tiếp</b> nhiệm vụ xã hội: phủ sóng vùng xa, trao học bổng, giữ chủ quyền biển đảo.</p>
+
+    <div class="reveal delay2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px">
+      <div class="stat"><div class="num">92%</div><div class="lbl">Trường học cả nước có Internet miễn phí (~25 triệu người hưởng lợi)</div></div>
+      <div class="stat"><div class="num">230K+</div><div class="lbl">Suất học bổng “Vì em hiếu học” (hơn 290 tỷ đồng, từ 2013)</div></div>
+      <div class="stat"><div class="num">300.000</div><div class="lbl">km² vùng biển được phủ sóng (Trường Sa, nhà giàn DK1)</div></div>
+    </div>
+    <p class="lead reveal" style="margin-top:14px;font-size:14px;color:var(--muted)">Nguồn: Tiền Phong (2026); Viettel Family (2024); Nhân Dân (2025). Chi tiết ở mục Tài liệu tham khảo.</p>
+  </div>
+</section>
+
+<!-- ===================== DEBATE ===================== -->
+<section id="debate">
+  <div class="wrap">
+    <div class="kicker reveal">Câu hỏi phản biện</div>
+    <h2 class="sec-h2 reveal delay1">Tư nhân có thể "định hướng XHCN" không?</h2>
+    <p class="lead reveal delay2" style="color:#c9bfb0">Thể chế kinh tế thị trường ở Việt Nam còn non trẻ: <i>"một số loại thị trường chậm hình thành và phát triển, vận hành còn nhiều vướng mắc, kém hiệu quả"</i> <span style="font-size:12px;color:#8a8073">(Nghị quyết 11‑NQ/TW, 2017)</span>. Câu hỏi đặt ra: khu vực tư nhân, vốn vận hành vì lợi nhuận, có thể thực sự song hành với định hướng xã hội chủ nghĩa?</p>
+    <p class="lead reveal delay2">Định hướng XHCN <b>không</b> có nghĩa là triệt tiêu tư hữu hay bài trừ tư bản, mà là hướng sự phát triển của mọi thành phần kinh tế phục vụ mục tiêu chung của quốc gia.</p>
+
+    <blockquote class="quote reveal">"Kinh tế tư nhân là một động lực quan trọng của nền kinh tế."
+      <cite>Nghị quyết số 10‑NQ/TW, Hội nghị Trung ương 5 khóa XII (ngày 3/6/2017)</cite>
+    </blockquote>
+
+    <p class="lead reveal" style="color:#c9bfb0">Khu vực tư nhân thể hiện "định hướng XHCN" qua ba khía cạnh, với số liệu minh chứng:</p>
+    <div class="aspects">
+      <div class="aspect reveal"><div class="n">&gt;30%</div><h3>Thượng tôn pháp luật</h3><p>Đóng góp hơn 30% tổng thu ngân sách nhà nước; đề cao đạo đức, văn hoá kinh doanh và tinh thần thượng tôn pháp luật.</p><span class="srctag">Nghị quyết 68‑NQ/TW (2025)</span></div>
+      <div class="aspect reveal delay1"><div class="n">82%</div><h3>Giải quyết vấn đề xã hội</h3><p>Sử dụng khoảng 82% tổng số lao động cả nước, góp phần xoá đói, giảm nghèo, ổn định đời sống xã hội.</p><span class="srctag">Nghị quyết 68‑NQ/TW (2025)</span></div>
+      <div class="aspect reveal delay2"><div class="n">900+ tỷ</div><h3>Chia sẻ nguồn lực</h3><p>Trách nhiệm xã hội gắn với bản sắc dân tộc, như Vingroup tài trợ hơn 900 tỷ đồng máy thở, hoá chất y tế chống dịch COVID‑19.</p><span class="srctag">Vingroup (2020)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROFIT vs TNXH ===================== -->
+<section id="balance">
+  <div class="wrap">
+    <div class="kicker reveal">Quan hệ biện chứng</div>
+    <h2 class="sec-h2 reveal delay1">Lợi nhuận &amp; Trách nhiệm xã hội (TNXH)</h2>
+    <p class="lead reveal delay2">Hai yếu tố không loại trừ nhau mà <b>bổ trợ lẫn nhau</b>. Thử gạt công tắc để thấy điều gì xảy ra:</p>
+
+    <div class="balwrap reveal">
+      <div class="baltoggle">
+        <button id="bt-profit" class="on" onclick="setBalance('profit')">Chỉ chạy theo lợi nhuận</button>
+        <button id="bt-harmony" onclick="setBalance('harmony')">Hài hòa (định hướng XHCN)</button>
+      </div>
+      <div class="beam-stage">
+        <div class="beam" id="beam" style="--tilt:0deg">
+          <div class="arm left"><div class="pan"><div class="str"></div><div class="disc">LỢI NHUẬN</div></div></div>
+          <div class="arm right"><div class="pan"><div class="str"></div><div class="disc">TNXH</div></div></div>
+        </div>
+        <div class="fulcrum"></div>
+      </div>
+      <p id="balmsg"></p>
+    </div>
+
+    <div class="balpoints reveal">
+      <div class="balpoint">
+        <div class="bn">3.1 · Lợi nhuận</div>
+        <h4>Mục tiêu sinh tồn</h4>
+        <p>Không có lợi nhuận, doanh nghiệp không thể tồn tại, nộp thuế hay trả lương. Lợi nhuận cũng là tín hiệu thị trường thúc đẩy cải tiến kỹ thuật, nâng cao năng suất.</p>
+        <span class="srctag">Giáo trình KTCT Mác–Lênin, tr. 48, 110</span>
+      </div>
+      <div class="balpoint">
+        <div class="bn">3.2 · Trách nhiệm xã hội</div>
+        <h4>Biểu hiện định hướng XHCN</h4>
+        <p>Không theo đuổi lợi nhuận bằng mọi giá: không hủy hoại môi trường, không bóc lột lao động, không trốn thuế, không cạnh tranh thiếu lành mạnh.</p>
+        <span class="srctag">Giáo trình KTCT Mác–Lênin, tr. 48</span>
+      </div>
+      <div class="balpoint">
+        <div class="bn">3.3 · Sự hài hòa</div>
+        <h4>Quan hệ biện chứng</h4>
+        <p>TNXH xây uy tín, niềm tin người tiêu dùng; lợi nhuận bền vững là nền tảng tài chính để duy trì TNXH lâu dài.</p>
+        <span class="srctag">Giáo trình, tr. 49, 117 · Nghị quyết 10‑NQ/TW, Mục III.5</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONCLUSION ===================== -->
+<section id="concl">
+  <div class="wrap">
+    <div class="kicker reveal" style="color:#f6d9cf;justify-content:center">Kết luận</div>
+    <h2 class="reveal delay1">Được định hướng đúng, tư nhân vừa là động lực, vừa là công cụ xã hội.</h2>
+    <p class="lead reveal delay2">Kinh tế tư nhân theo đuổi lợi nhuận, nhưng dưới sự điều tiết của Nhà nước và tinh thần trách nhiệm xã hội, nó có thể đồng thời phục vụ mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh”. Vingroup là một minh chứng sống động.</p>
+    <div class="open reveal delay3">“Nếu bạn là một doanh nghiệp tư nhân, bạn sẽ cân bằng lợi nhuận và trách nhiệm xã hội như thế nào?”</div>
+  </div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section id="quiz">
+  <div class="wrap">
+    <div class="kicker reveal" style="justify-content:center;text-align:center;width:100%">Kiểm tra nhanh</div>
+    <h2 class="sec-h2 reveal delay1" style="text-align:center">Bạn đã nắm được gì?</h2>
+    <div class="quizcard reveal delay2" id="quizcard">
+      <div class="qbar"><div id="qbarfill"></div></div>
+      <div id="qbody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GAME ===================== -->
+<section id="game">
+  <div class="wrap">
+    <div class="kicker reveal">Một trò chơi thẻ bài</div>
+    <h2 class="reveal delay1" style="font-size:clamp(38px,7vw,72px)">Đế Chế</h2>
+
+    <div class="gameframe reveal delay2">
+      <div class="gtoolbar">
+        <div class="lbl"><span>ĐẾ CHẾ</span> · mini‑game thẻ bài · có bảng xếp hạng cá nhân</div>
+        <div class="gbtns">
+          <button class="gbtn play" onclick="goFullscreen()">Toàn màn hình</button>
+          <a class="gbtn" href="game.html" target="_blank" rel="noopener">Mở ở tab mới</a>
+        </div>
+      </div>
+      <iframe id="gameframe" src="game.html" title="Đế Chế mini-game" loading="lazy"
+        allow="fullscreen" referrerpolicy="no-referrer"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REFERENCES ===================== -->
+<section id="refs">
+  <div class="wrap">
+    <div class="kicker reveal">Nguồn &amp; kiểm chứng</div>
+    <h2 class="sec-h2 reveal delay1">Tài liệu tham khảo</h2>
+    <p class="lead reveal delay2">Toàn bộ số liệu &amp; luận điểm đều được đối chiếu với nguồn gốc (không dùng AI thuần). <span class="v" style="position:static">đã kiểm chứng</span> = nhóm đã xác minh lại trực tuyến.</p>
+    <div class="reflist" id="reflist"></div>
+
+    <details class="ai reveal">
+      <summary>Phụ lục AI: minh bạch &amp; liêm chính học thuật</summary>
+      <div class="body">
+        <p><b>AI được dùng như thế nào:</b> hỗ trợ thiết kế &amp; lập trình trang web tương tác, gợi ý bố cục và biên tập câu chữ tiếng Việt; đóng vai người phản biện để mài sắc lập luận.</p>
+        <p><b>AI KHÔNG được dùng để:</b> bịa số liệu hay nguồn. Mọi dữ kiện then chốt (Vingroup là DN tư nhân lớn nhất Việt Nam 2025; đánh giá ESG của VinFast từ Sustainalytics 2022; chương trình hỗ trợ tới 70% của Quỹ Thiện Tâm/Vinmec; Vingroup tài trợ 1.700 máy thở và hơn 900 tỷ đồng chống Covid‑19 năm 2020; Viettel phủ Internet miễn phí ~92% trường học và học bổng “Vì em hiếu học” hơn 230.000 suất; Nghị quyết 10‑NQ/TW, 11‑NQ/TW 2017 và 68‑NQ/TW 2025; định nghĩa KTTT định hướng XHCN) đều được <b>kiểm chứng lại</b> với các nguồn liệt kê ở trên. Riêng số liệu việc làm Vingroup (Mariana Nguyen, 2026), nhóm cần tự bổ sung link nguồn trước khi nộp vì AI không tìm được nguồn để xác minh.</p>
+        <p style="color:var(--muted);font-size:13px">Nội dung học thuật &amp; trích dẫn do nhóm Untitled biên soạn; phần này ghi nhận vai trò công cụ của AI theo yêu cầu tiêu chí 1.4.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="grp">Nhóm Untitled</div>
+  <div class="members">Kinh tế chính trị Mác – Lênin · Chương 5 · Assignment 1</div>
+  <div class="small">Sản phẩm web tương tác · © 2026 · Kèm mini‑game “Đế Chế”</div>
+</footer>
+
+<script>
+'use strict';
+
+/* ---------- scroll reveal ---------- */
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.14,rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- progress bar + nav dots ---------- */
+const secs=[...document.querySelectorAll('section')];
+const dotLabels={hero:'Mở đầu',q0:'Câu hỏi',concept:'Khái niệm',sectors:'Thành phần',goal:'Mục tiêu',
+  vin:'Vingroup',viettel:'Viettel',debate:'Phản biện',balance:'Lợi nhuận & TNXH',concl:'Kết luận',quiz:'Quiz',game:'Mini‑game',refs:'Nguồn'};
+const dots=document.getElementById('dots');
+secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;
+  a.innerHTML=`<span>${dotLabels[s.id]||s.id}</span>`;dots.appendChild(a);});
+const dotEls=[...dots.children];
+const prog=document.getElementById('prog');
+function onScroll(){
+  const h=document.documentElement;
+  const max=h.scrollHeight-h.clientHeight;
+  prog.style.width=(max>0?(h.scrollTop/max*100):0)+'%';
+  let cur=0;const mid=h.scrollTop+innerHeight*0.35;
+  secs.forEach((s,i)=>{if(s.offsetTop<=mid)cur=i;});
+  dotEls.forEach((d,i)=>d.classList.toggle('on',i===cur));
+}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+
+/* ---------- stat count-up ---------- */
+document.querySelectorAll('.stat .num').forEach(el=>{
+  const raw=el.textContent;const m=raw.match(/^([^\d]*)(\d+(?:\.\d+)?)(.*)$/);
+  if(!m)return;const pre=m[1],target=parseFloat(m[2]),post=m[3],dec=(m[2].split('.')[1]||'').length;
+  const ob=new IntersectionObserver(list=>{list.forEach(e=>{if(!e.isIntersecting)return;ob.disconnect();
+    const t0=performance.now(),dur=1100;
+    function tick(now){const p=Math.min(1,(now-t0)/dur);const v=target*(1-Math.pow(1-p,3));
+      el.textContent=pre+v.toFixed(dec)+post;if(p<1)requestAnimationFrame(tick);else el.textContent=raw;}
+    requestAnimationFrame(tick);});},{threshold:.6});
+  ob.observe(el);
+});
+
+/* ---------- Vingroup tabs ---------- */
+const vtabs=document.getElementById('vtabs');
+vtabs.addEventListener('click',e=>{
+  const b=e.target.closest('.tab');if(!b)return;
+  vtabs.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t===b));
+  document.querySelectorAll('#vin .panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+b.dataset.p).classList.add('on');
+});
+
+/* ---------- profit / TNXH balance ---------- */
+function setBalance(mode){
+  const beam=document.getElementById('beam'),msg=document.getElementById('balmsg');
+  document.getElementById('bt-profit').classList.toggle('on',mode==='profit');
+  document.getElementById('bt-harmony').classList.toggle('on',mode==='harmony');
+  if(mode==='profit'){
+    beam.style.setProperty('--tilt','-11deg');
+    msg.innerHTML='<b>Mất cân bằng.</b> Lợi nhuận là mục tiêu sinh tồn: không có nó, doanh nghiệp không thể nộp thuế, trả lương hay làm TNXH. Nhưng theo đuổi lợi nhuận <b>bằng mọi giá</b> (hủy hoại môi trường, bóc lột lao động, trốn thuế) thì đi ngược định hướng XHCN.';
+  }else{
+    beam.style.setProperty('--tilt','0deg');
+    msg.innerHTML='<b>Hài hòa.</b> TNXH xây dựng “quyền lực mềm”, uy tín thương hiệu và sự ủng hộ của người tiêu dùng; ngược lại, lợi nhuận bền vững là nền tảng tài chính để duy trì các quỹ TNXH dài hạn. Đây chính là cách kinh tế tư nhân thực hành tính “xã hội”: <b>quan hệ biện chứng, bổ trợ lẫn nhau</b>.';
+  }
+}
+setBalance('profit');
+
+/* ---------- QUIZ ---------- */
+const QUIZ=[
+  {q:'Kinh tế thị trường định hướng XHCN có sự điều tiết của ai?',
+   o:['Nhà nước do Đảng Cộng sản Việt Nam lãnh đạo','Chỉ do bàn tay vô hình của thị trường','Các tập đoàn tư nhân lớn','Nhà đầu tư nước ngoài'],a:0,
+   e:'Đúng. Nhà nước điều tiết, do Đảng Cộng sản Việt Nam lãnh đạo (Giáo trình, tr. 108).'},
+  {q:'Trong các thành phần kinh tế, kinh tế tư nhân giữ vai trò gì?',
+   o:['Vai trò chủ đạo','Một động lực quan trọng','Không có vai trò gì','Thay thế kinh tế nhà nước'],a:1,
+   e:'“Chủ đạo” là của kinh tế nhà nước; kinh tế tư nhân là “một động lực quan trọng”.'},
+  {q:'Văn kiện nào khẳng định phát triển kinh tế tư nhân thành động lực quan trọng?',
+   o:['Nghị quyết 10‑NQ/TW (2017)','Hiến pháp 1946','Luật Doanh nghiệp 1999','Nghị định 100'],a:0,
+   e:'Nghị quyết số 10‑NQ/TW, Hội nghị Trung ương 5 khóa XII, ngày 3/6/2017.'},
+  {q:'VinFast nhận đánh giá ESG (2022) từ tổ chức nào?',
+   o:['Moody’s','Morningstar Sustainalytics','WHO','VCCI'],a:1,
+   e:'Đúng. Morningstar Sustainalytics, điểm 23.3, top 10 hãng xe toàn cầu về ESG.'},
+  {q:'Quan hệ giữa Lợi nhuận và Trách nhiệm xã hội (TNXH) là?',
+   o:['Loại trừ nhau hoàn toàn','Không liên quan','Biện chứng, bổ trợ lẫn nhau','TNXH luôn làm doanh nghiệp nghèo đi'],a:2,
+   e:'Đúng. Quan hệ biện chứng: lợi nhuận bền vững nuôi TNXH; TNXH xây uy tín, củng cố lợi nhuận.'},
+];
+let qi=0,qscore=0,qLock=false;
+function renderQuiz(){
+  const b=document.getElementById('qbody');
+  document.getElementById('qbarfill').style.width=(qi/QUIZ.length*100)+'%';
+  if(qi>=QUIZ.length){
+    const pct=Math.round(qscore/QUIZ.length*100);
+    const msg=pct===100?'Xuất sắc! Bạn đã nắm vững bài.':pct>=60?'Khá tốt! Xem lại vài mục nhé.':'Cùng xem lại nội dung phía trên nào.';
+    b.innerHTML=`<div class="qresult"><div class="big">${qscore}/${QUIZ.length}</div>
+      <p style="font-size:17px;font-weight:700;margin:6px 0 4px">${msg}</p>
+      <p style="color:var(--muted)">Bạn trả lời đúng ${pct}% câu hỏi.</p>
+      <button class="qnext on" onclick="qi=0;qscore=0;renderQuiz()">Làm lại</button></div>`;
+    document.getElementById('qbarfill').style.width='100%';return;
+  }
+  const it=QUIZ[qi];qLock=false;
+  b.innerHTML=`<div class="qnum">Câu ${qi+1} / ${QUIZ.length}</div>
+    <div class="qtext">${it.q}</div>
+    <div class="opts">${it.o.map((o,i)=>`<button class="qopt" data-i="${i}" onclick="answer(${i})">
+      <span class="key">${String.fromCharCode(65+i)}</span><span>${o}</span></button>`).join('')}</div>
+    <div id="qfeedback"></div>
+    <div class="qfoot"><span class="qscore">Điểm: ${qscore}</span>
+      <button class="qnext" id="qnext" onclick="qi++;renderQuiz()">Tiếp →</button></div>`;
+}
+function answer(i){
+  if(qLock)return;qLock=true;
+  const it=QUIZ[qi];const opts=document.querySelectorAll('#qbody .qopt');
+  opts.forEach(o=>{o.disabled=true;const oi=+o.dataset.i;
+    if(oi===it.a)o.classList.add('correct');else if(oi===i)o.classList.add('wrong');});
+  const fb=document.getElementById('qfeedback');
+  if(i===it.a){qscore++;fb.className='show ok';fb.innerHTML='<b>Đúng.</b> '+it.e;}
+  else{fb.className='show no';fb.innerHTML='<b>Chưa chính xác.</b> '+it.e;}
+  document.querySelector('.qscore').textContent='Điểm: '+qscore;
+  document.getElementById('qnext').classList.add('on');
+  if(qi===QUIZ.length-1)document.getElementById('qnext').textContent='Xem kết quả →';
+}
+renderQuiz();
+
+/* ---------- game fullscreen ---------- */
+function goFullscreen(){
+  const f=document.getElementById('gameframe');
+  if(f.requestFullscreen)f.requestFullscreen();
+  else if(f.webkitRequestFullscreen)f.webkitRequestFullscreen();
+  else window.open('game.html','_blank');
+}
+
+/* ---------- references ---------- */
+const REFS=[
+  {t:'Giáo trình <b>Kinh tế chính trị Mác – Lênin</b> (định nghĩa KTTT định hướng XHCN, các thành phần kinh tế, người sản xuất/tiêu dùng, cạnh tranh, phân phối), tr. 48‑49, 108, 110, 114‑121.',v:false},
+  {t:'<b>Nghị quyết số 10‑NQ/TW</b> ngày 3/6/2017, Hội nghị Trung ương 5 khóa XII: “Phát triển kinh tế tư nhân trở thành một động lực quan trọng của nền kinh tế thị trường định hướng XHCN”.',u:'https://tulieuvankien.dangcongsan.vn/he-thong-van-ban/van-ban-cua-dang/nghi-quyet-so-10-nqtw-ngay-362017-hoi-nghi-lan-thu-nam-ban-chap-hanh-trung-uong-dang-khoa-xii-ve-phat-trien-kinh-te-tu-3222',v:true},
+  {t:'<b>Nghị quyết số 11‑NQ/TW</b> ngày 3/6/2017, Hội nghị Trung ương 5 khóa XII: “Hoàn thiện thể chế kinh tế thị trường định hướng XHCN” (tình trạng thị trường chưa đồng bộ; mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh”).',u:'https://tulieuvankien.dangcongsan.vn/van-kien-tu-lieu-ve-dang/hoi-nghi-bch-trung-uong/khoa-xii/nghi-quyet-so-11-nqtw-ngay-362017-hoi-nghi-lan-thu-nam-ban-chap-hanh-trung-uong-dang-khoa-xii-ve-hoan-thien-the-che-kinh-561',v:true},
+  {t:'<b>Nghị quyết số 68‑NQ/TW</b> ngày 4/5/2025, Bộ Chính trị: “Phát triển kinh tế tư nhân” (đóng góp hơn 30% ngân sách nhà nước, sử dụng khoảng 82% lao động, thượng tôn pháp luật, trách nhiệm xã hội).',u:'https://baochinhphu.vn/toan-van-nghi-quyet-so-68-nq-tw-ve-phat-trien-kinh-te-tu-nhan-102250505122337909.htm',v:true},
+  {t:'Phụng Tiên (2025). <b>10 DN tư nhân lớn nhất Việt Nam 2025</b>. Cafef. (Vingroup giữ vị trí dẫn đầu.)',u:'https://cafef.vn/10-dn-tu-nhan-lon-nhat-viet-nam-2025-hai-dn-cua-ty-phu-nguyen-thi-phuong-thao-lan-dau-tien-cung-gop-mat-188251112230703234.chn',v:true},
+  {t:'VinUni (2025). <b>Đối tác toàn cầu</b>: hợp tác với các trường đại học quốc tế.',u:'https://vinuni.edu.vn/vi/quan-he-doi-tac-toan-cau/',v:true},
+  {t:'Vinmec International Hospital (2024). <b>Hỗ trợ tới 70% phí điều trị tim mạch, ung bướu tại Vinmec</b> (Quỹ Thiện Tâm).',u:'https://www.vinmec.com/vie/bai-viet/ho-tro-toi-70-phi-dieu-tri-tim-mach-ung-buou-tai-vinmec-vi',v:true},
+  {t:'VinFast (2022). <b>VinFast nhận đánh giá ESG (Môi trường – Xã hội – Quản trị) từ Sustainalytics</b>: điểm 23.3, top 10 hãng xe toàn cầu.',u:'https://vinfastauto.com/vn_vi/vinfast-nhan-duoc-danh-gia-esg-moi-truong-xa-hoi-quan-tri-tu-sustainalytics',v:true},
+  {t:'Cộng đồng VinFast Toàn cầu (2022). <b>Tọa đàm Car Talks: Giải pháp phát triển bền vững của xe điện tại Việt Nam</b>.',u:'https://vinfast.vn/giai-phap-phat-trien-ben-vung-cua-xe-dien-tai-viet-nam/',v:false},
+  {t:'Vingroup (2020). <b>Vingroup trao tặng 1.700 máy thở xâm nhập và tài trợ hoá chất cho 56.000 xét nghiệm Covid‑19</b>: hơn 900 tỷ đồng hỗ trợ ngành y tế.',u:'https://vingroup.net/tin-tuc-su-kien/bai-viet/2224/vingroup-trao-tang-1700-may-tho-xam-nhap-va-tai-tro-hoa-chat-cho-56000-xet-nghiem-covid-19',v:true},
+  {t:'P.V. (2026). <b>Lớp học trên đỉnh núi cao nhất thế giới: Viettel thu hẹp khoảng cách số bằng Internet</b>. Tiền Phong (Viettel phủ Internet miễn phí gần 40.000 cơ sở giáo dục, ~92% trường cả nước, ~25 triệu người hưởng lợi).',u:'https://tienphong.vn/lop-hoc-tren-dinh-nui-cao-nhat-the-gioi-viettel-thu-hep-khoang-cach-so-bang-internet-post1839269.tpo',v:true},
+  {t:'Mai Vũ (2024). <b>Nỗ lực bền bỉ của Viettel để xóa nhòa khoảng cách giáo dục</b>. Cổng thông tin Viettel Family (học bổng “Vì em hiếu học”: hơn 230.000 suất, hơn 290 tỷ đồng, từ 2013).',u:'https://giaothongso.com.vn/no-luc-ben-bi-cua-viettel-de-xoa-nhoa-khoang-cach-giao-duc/',v:true},
+  {t:'Hà Linh (2025). <b>Dấu mốc 30 năm kiến tạo hạ tầng số quốc gia</b>. Nhân Dân điện tử (1.450 trạm BTS phủ 300.000 km² vùng biển, gồm Trường Sa và nhà giàn DK1).',u:'https://nhandan.vn/dau-moc-30-nam-kien-tao-ha-tang-so-quoc-gia-post919629.html',v:true},
+  {t:'ESSI. <b>Trách nhiệm xã hội của doanh nghiệp tiếp cận theo lý thuyết phát triển bền vững</b> (bối cảnh các hiệp định tự do thế hệ mới).',u:'https://essi.org.vn/trach-nhiem-xa-hoi-cua-doanh-nghiep-tiep-can-theo-ly-thuyet-phat-trien-ben-vung-trong-boi-canh-thuc-hien-cac-hiep-dinh-tu-do-the-he-moi-giai-phap-cho-viet-nam-nd314602.html',v:false},
+  {t:'Mariana Nguyen (2026). Số liệu việc làm Vingroup. <span style="color:var(--red);font-weight:800">Cảnh báo: nhóm cần bổ sung link nguồn gốc</span> trước khi nộp bài.',v:false},
+];
+document.getElementById('reflist').innerHTML=REFS.map((r,i)=>
+  `<div class="ref"><span class="rn">[${i+1}]</span><div>${r.t}${r.u?`<br><a href="${r.u}" target="_blank" rel="noopener">${r.u}</a>`:''}${r.v?' <span class="v">đã kiểm chứng</span>':''}</div></div>`).join('');
+</script>
+</body>
+</html>

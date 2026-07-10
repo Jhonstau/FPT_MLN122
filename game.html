@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ĐẾ CHẾ · tư bản không định hướng</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#141b23; --panel2:#1b242f; --line:#2c3947;
+    --cur:#c69a3a; --mat:#b08d57; --man:#c0432f;
+    --cap:#4fae80; --stack:#2f6fb0; --text:#e6edf3; --dim:#8b98a5;
+    --gain:#4fae80; --conv:#2f6fb0; --spec:#c07a2e; --capc:#c69a3a; --bund:#b01e2e;
+  }
+  *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+  html,body{height:100%}
+  body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;background:
+    radial-gradient(1200px 600px at 50% -10%, #16202b 0%, var(--bg) 60%);
+    color:var(--text);overflow:hidden;display:flex;flex-direction:column}
+
+  /* ===== TOP: resources ===== */
+  #top{padding:12px 16px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:5}
+  #resrow{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .res{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:8px 18px;min-width:118px;text-align:center;position:relative;transition:border-color .3s}
+  .res .lbl{font-size:10px;letter-spacing:2px;color:var(--dim);font-weight:700}
+  .res .val{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+  .res.cur .val{color:var(--cur)} .res.mat .val{color:var(--mat)} .res.man .val{color:var(--man)}
+  .res.neg{border-color:#f85149;animation:alarm 1s infinite}
+  .res.neg .val{color:#f85149 !important}
+  .res .ded{font-size:11.5px;font-weight:800;color:#f85149;min-height:15px;
+    font-variant-numeric:tabular-nums;opacity:.85}
+  @keyframes alarm{50%{box-shadow:0 0 12px #f8514966}}
+  #pillrow{display:flex;gap:10px;align-items:center;min-height:30px;flex-wrap:wrap;justify-content:center}
+  .pill{background:var(--panel2);border:1px solid var(--line);border-radius:20px;
+    padding:4px 14px;font-weight:800;font-size:13px;color:var(--dim)}
+  .pill.stack{border-color:var(--stack);color:var(--stack);box-shadow:0 0 14px #2f6fb022}
+  .pill.bm{border-color:#c0432f;color:#c0432f;box-shadow:0 0 14px #c0432f22}
+  .pill.sin{border-color:#8fb4d8;color:#8fb4d8}
+  .pill.go{border-color:var(--cap);color:var(--cap)}
+  .pill.pol{border-color:var(--cur);color:var(--cur);cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+  .polchip{display:inline-flex;align-items:center;justify-content:center;font-size:15px;line-height:1;
+    padding:2px 4px;border-radius:8px;background:#0d1218;border:1px solid #ffffff18;cursor:help;position:relative}
+  .polchip sup{font-size:8px;color:var(--cur);font-weight:900;margin-left:1px}
+  .polchip:hover{border-color:var(--cur);background:#1c1608}
+  .polchip.polfire{animation:polfire .8s ease-out}
+  @keyframes polfire{0%{transform:scale(1)}30%{transform:scale(1.5);
+    box-shadow:0 0 14px var(--cur);border-color:var(--cur)}100%{transform:scale(1)}}
+  .pill.crisis{border-color:#f85149;color:#f85149;animation:alarm 1s infinite}
+  .pill.patch{border-color:#c07a2e;color:#c07a2e}
+  .float{position:fixed;font-weight:800;font-size:16px;pointer-events:none;z-index:99;
+    animation:floaty 1.1s ease-out forwards}
+  @keyframes floaty{0%{opacity:0;transform:translateY(6px)}15%{opacity:1}
+    100%{opacity:0;transform:translateY(-34px)}}
+
+  /* ===== BOARD ===== */
+  #board{flex:1;display:flex;align-items:stretch;justify-content:center;position:relative;min-height:0;
+    border-radius:20px;transition:box-shadow .15s,background .15s}
+  #board.drop{background:radial-gradient(600px 300px at 50% 45%,#4fae8022,transparent 70%);
+    box-shadow:inset 0 0 0 2px #4fae80aa}
+  #board.drop #drophint{color:var(--cap);opacity:1}
+  #board.drop #capnum{transform:scale(1.12)}
+  #capital{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    text-align:center;pointer-events:none}
+  #capnum{font-size:64px;font-weight:900;color:var(--cap);line-height:1;
+    text-shadow:0 0 30px #4fae8033;font-variant-numeric:tabular-nums;transition:transform .25s}
+  #capnum.pop{transform:scale(1.18)}
+  .caplbl{font-size:13px;color:var(--dim);letter-spacing:3px;font-weight:700}
+  #capbar{width:300px;height:7px;background:var(--panel2);border-radius:5px;overflow:hidden}
+  #capbar>div{height:100%;background:linear-gradient(90deg,#2e7d5b,#4fae80);width:0;transition:width .5s}
+  #dayline{font-size:14px;font-weight:700;margin-top:8px}
+  #styleline{font-size:11px;color:var(--stack);font-weight:700;letter-spacing:1px;max-width:420px}
+  #stateline{font-size:12px;color:var(--dim)}
+  #stateline.crisis{color:#f85149;font-weight:800;animation:alarm 1s infinite}
+  #drophint{margin-top:14px;font-size:12px;color:#4a86c466;letter-spacing:2px;font-weight:700}
+  .side{position:absolute;top:8px;width:230px;font-size:11.5px;line-height:1.55;color:var(--dim)}
+  #feed{left:12px;max-height:82%;overflow:hidden;display:flex;flex-direction:column}
+  #feed div{border-left:2px solid var(--line);padding-left:8px;margin-bottom:3px;opacity:.9}
+  #feed .good{color:#4fae80;border-color:#2e7d5b} #feed .bad{color:#f85149;border-color:#f85149}
+  #feed .ev{color:var(--stack);border-color:var(--stack)} #feed .day{color:#4a86c4;border-color:#4a86c4;font-weight:700}
+  #sched{right:12px;text-align:right}
+  #sched b{color:var(--text)}
+
+  /* ===== HAND ===== */
+  #handzone{height:250px;position:relative;display:flex;align-items:flex-end;justify-content:center;z-index:6}
+  #hand{display:flex;justify-content:center;align-items:flex-end;height:100%;padding-bottom:10px}
+  .card{width:146px;height:206px;background:linear-gradient(160deg,var(--panel2),#12181f);
+    border:2px solid var(--line);border-radius:12px;margin:0 -14px;position:relative;
+    display:flex;flex-direction:column;cursor:grab;touch-action:none;
+    transition:transform .35s cubic-bezier(.2,.8,.3,1.1),box-shadow .18s,margin .18s,opacity .3s;
+    box-shadow:0 4px 14px #0009}
+  .card:hover{transform:translateY(-40px) scale(1.08) !important;z-index:50 !important;
+    box-shadow:0 16px 34px #000d}
+  .card.drag{position:fixed;z-index:200;pointer-events:none;cursor:grabbing;margin:0;
+    transform:rotate(4deg) scale(1.06) !important;transition:none !important;
+    box-shadow:0 26px 55px #000e;border-color:#4fae80}
+  /* deal-in: card starts flung out near the draw pile, then settles into the fan */
+  .card.dealing{opacity:0;transform:translate(40vw,150px) rotate(24deg) scale(.4) !important;
+    transition:none !important}
+  .card.played{pointer-events:none}
+  /* ghost that flies from where a card sat to a pile */
+  .flyghost{position:fixed;z-index:250;pointer-events:none;border-radius:12px;
+    background:linear-gradient(160deg,var(--panel2),#12181f);border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:40px;
+    box-shadow:0 8px 24px #000a;transition:all .5s cubic-bezier(.5,0,.75,.4)}
+  #capnum.milestone{animation:msflash .8s ease-out}
+  @keyframes msflash{0%{transform:scale(1)}30%{transform:scale(1.5);
+    text-shadow:0 0 60px #4fae80,0 0 30px #4fae80}100%{transform:scale(1)}}
+  #msbanner{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;z-index:280;opacity:0}
+  #msbanner.go{animation:msbanner 1.6s ease-out}
+  #msbanner b{font-size:84px;font-weight:900;color:var(--cap);text-shadow:0 0 50px #4fae80aa;
+    font-variant-numeric:tabular-nums}
+  @keyframes msbanner{0%{opacity:0;transform:scale(.4)}20%{opacity:1;transform:scale(1.1)}
+    75%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.3)}}
+  .pile.bump{animation:bump .3s ease-out}
+  @keyframes bump{50%{transform:scale(1.18);border-color:var(--cap)}}
+  .card .art{height:78px;margin:7px 7px 0;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;font-size:40px;background:linear-gradient(150deg,#1f2c3a,#101820);
+    border:1px solid #ffffff12;text-shadow:0 4px 12px #000;overflow:hidden}
+  .card .nm{font-size:12px;font-weight:800;text-align:center;padding:5px 6px 2px;letter-spacing:.2px}
+  .card .ef{font-size:10.5px;text-align:center;color:#c9d1d9;padding:0 8px;line-height:1.35;flex:1;overflow:hidden}
+  .card .kwl{font-size:9px;text-align:center;color:var(--stack);font-weight:800;padding-bottom:6px;min-height:14px}
+  .card .tyb{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8.5px;
+    letter-spacing:1.5px;font-weight:800;padding:2px 10px;border-radius:8px;color:#fff;white-space:nowrap}
+  .card .lvb{position:absolute;top:4px;left:6px;font-size:9px;background:#4a86c4;color:#04121f;
+    border-radius:8px;padding:1px 6px;font-weight:900;z-index:2}
+  .t-Gain .tyb{background:var(--gain)} .t-Gain{border-color:var(--gain)}
+  .t-Convert .tyb{background:var(--conv)} .t-Convert{border-color:var(--conv)}
+  .t-Special .tyb{background:var(--spec)} .t-Special{border-color:var(--spec)}
+  .t-Capital .tyb{background:var(--capc);color:#221a00} .t-Capital{border-color:var(--capc);box-shadow:0 4px 18px #c69a3a22}
+  .t-Bundle .tyb{background:var(--bund);color:#1d1030} .t-Bundle{border-color:var(--bund)}
+  .card.sab{filter:grayscale(1) brightness(.6);cursor:not-allowed}
+  .card .sabb{position:absolute;top:4px;right:6px;font-size:9px;background:#f85149;color:#fff;
+    border-radius:8px;padding:1px 6px;font-weight:800;z-index:2}
+
+  #deckui{position:absolute;right:22px;bottom:22px;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .pilebox{display:flex;gap:8px}
+  .pile{width:64px;height:90px;border-radius:9px;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;
+    color:var(--dim);font-weight:800;font-size:9px}
+  #drawpile{background:repeating-linear-gradient(135deg,#1b2733 0 8px,#141d27 8px 16px);
+    box-shadow:2px 2px 0 #101820,4px 4px 0 #0c1218}
+  #discpile{background:#10161d;border-style:dashed}
+  .pile b{font-size:18px;color:var(--text)}
+  #endday{background:#2e7d5b;color:#fff;border:0;border-radius:10px;padding:12px 20px;
+    font-size:15px;font-weight:800;cursor:pointer;letter-spacing:1px}
+  #endday:hover{background:#3a9268}
+  #endday:disabled{opacity:.4;cursor:not-allowed}
+  #cornerbtns{position:absolute;left:22px;bottom:22px;display:flex;gap:8px}
+  .mini{background:var(--panel2);color:var(--dim);border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer}
+  .mini:hover{border-color:#4a86c4;color:var(--text)}
+
+  /* ===== MODAL ===== */
+  .modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;
+    z-index:300;backdrop-filter:blur(3px)}
+  .modal.on{display:flex}
+  .sheet{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;
+    max-width:780px;width:94%;max-height:88vh;overflow:auto;text-align:center;animation:pop .22s ease-out}
+  @keyframes pop{from{transform:scale(.92);opacity:0}}
+  .sheet.warn{border:4px solid #f85149;box-shadow:0 0 34px #f8514966}
+  .sheet.shop{border:4px solid var(--cur);box-shadow:0 0 34px #c69a3a55}
+  .sheet.good{border:4px solid var(--cap);box-shadow:0 0 34px #4fae8055}
+  .sheet h2{margin:0 0 4px;font-size:24px}
+  .sheet .sub{color:var(--dim);margin:0 0 18px;font-size:13.5px}
+  .choices{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .opt{flex:1;min-width:150px;max-width:230px;background:var(--panel2);border:1px solid var(--line);
+    color:var(--text);border-radius:12px;padding:14px;cursor:pointer;text-align:center;
+    font-family:inherit;font-size:13px;transition:.15s}
+  .opt:hover{border-color:#4a86c4;transform:translateY(-3px)}
+  .opt:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .opt b{display:block;font-size:14.5px;margin-bottom:5px}
+  .opt small{color:var(--dim);line-height:1.4;display:block}
+  .opt .big{font-size:30px;display:block;margin-bottom:6px}
+  .opt .price{display:inline-block;margin-top:7px;background:#2b2413;color:var(--cur);
+    border-radius:10px;padding:2px 10px;font-weight:800;font-size:12px}
+  .opt.sec{opacity:.7}
+  /* shop item type tags + fancier policy border */
+  .opt{position:relative}
+  .shoptag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8.5px;
+    letter-spacing:1.2px;font-weight:800;padding:2px 9px;border-radius:8px;white-space:nowrap;
+    background:var(--line);color:var(--text)}
+  .opt.polopt{border:2px solid var(--cur);background:linear-gradient(160deg,#26200a,#161009);
+    box-shadow:0 0 16px #c69a3a33}
+  .opt.polopt .shoptag{background:var(--cur);color:#221a00}
+  .opt.polopt:hover:not(:disabled){border-color:#ffe08a;box-shadow:0 0 22px #c69a3a66;transform:translateY(-3px)}
+  .opt.polopt b{color:var(--cur)}
+  .opt.bundleopt{border-color:var(--bund)} .opt.bundleopt .shoptag{background:var(--bund);color:#1d1030}
+  .opt.packopt{border-color:var(--gain)} .opt.packopt .shoptag{background:var(--gain);color:#04120a}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .grid4 .opt{min-width:0;max-width:none}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .grid3 .opt{min-width:0;max-width:none}
+  .endt{font-size:44px;margin:8px 0}
+</style>
+</head>
+<body>
+
+<div id="top">
+  <div id="resrow">
+    <div class="res cur" id="p-cur"><div class="lbl">TIỀN</div><div class="val" id="v-cur">0</div><div class="ded" id="d-cur"></div></div>
+    <div class="res mat" id="p-mat"><div class="lbl">VẬT TƯ</div><div class="val" id="v-mat">0</div><div class="ded" id="d-mat"></div></div>
+    <div class="res man" id="p-man"><div class="lbl">NHÂN LỰC</div><div class="val" id="v-man">0</div><div class="ded" id="d-man"></div></div>
+  </div>
+  <div id="pillrow"></div>
+</div>
+
+<div id="board">
+  <div id="feed" class="side"></div>
+  <div id="capital">
+    <div class="caplbl">🏆 Đ I Ể M &nbsp; X Ế P &nbsp; H Ạ N G</div>
+    <div id="capnum">0</div>
+    <div id="capbar"><div></div></div>
+    <div class="caplbl" id="goalline">MỐC TIẾP THEO 5</div>
+    <div id="dayline">Ngày 1</div>
+    <div id="styleline"></div>
+    <div id="stateline"></div>
+    <div id="drophint">▲ KÉO MỘT LÁ BÀI VÀO ĐÂY ĐỂ CHƠI ▲</div>
+  </div>
+  <div id="sched" class="side"></div>
+</div>
+
+<div id="handzone">
+  <div id="hand"></div>
+  <div id="cornerbtns">
+    <a class="mini" href="index.html" target="_top" style="text-decoration:none;display:inline-flex;align-items:center">← BÀI</a>
+    <button class="mini" onclick="showHelp()">❓ LUẬT</button>
+    <button class="mini" onclick="showLeaderboard()">🏆 BXH</button>
+    <button class="mini" onclick="if(confirm('Bỏ ván này và chơi lại?'))newGame()">↺ CHƠI LẠI</button>
+  </div>
+  <div id="deckui">
+    <div class="pilebox">
+      <div class="pile" id="drawpile"><b id="drawn">0</b>RÚT</div>
+      <div class="pile" id="discpile"><b id="discn">0</b>BỎ</div>
+    </div>
+    <button id="endday" onclick="endDay()">KẾT THÚC NGÀY ▶</button>
+  </div>
+</div>
+
+<div id="msbanner"><b></b></div>
+<div id="modal" class="modal"><div id="sheet" class="sheet"></div></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   ĐẾ CHẾ (formerly RATPITAL / VÉT GROUP), v10 "brainless number-go-up" rebuild
+   Re-themed + fully translated to Vietnamese for the "Kinh tế Tư nhân & Định hướng XHCN"
+   presentation: a satirical conglomerate chasing profit with zero social orientation.
+   GAME BALANCE UNCHANGED, only display strings were re-worded/translated, the milestone
+   ladder shifted 4/44/444/4444 → 5/55/555/5555, all three decks unlocked from the start,
+   and a localStorage personal leaderboard was added.
+   One run: ĐIỂM XẾP HẠNG (capital) races through milestones 5 → 55 → 555 → 5555.
+   Cards are FREE to play (no costs), the deck/discard piles and the
+   10-card hand cap at day start are the only brakes.
+   Level math kept from v9: value = base + inc × level.
+   Bundle math kept from v8: same effect 0s→sum+1, 1s→sum, else MULTIPLY (cap 256).
+   ===================================================================== */
+
+const MS=[5,55,555,5555];
+const RES=['cur','mat','man'];
+const RN={cur:'TIỀN',mat:'VẬT TƯ',man:'NHÂN LỰC',low:'TÀI NGUYÊN THẤP NHẤT'};
+const HAND_CAP=10, LOOP_CAP=99, LVL_CAP=256;
+/* ADAPTIVE weekly deduction (k = deduction #, 1,2,3…):
+   ONE bill, taken off EVERY resource = flat base + wealth-tax % of your SINGLE HIGHEST
+   resource peak. Scaling with the richest resource (not each one independently) means
+   one number to track AND it punishes dumping everything into one resource, the neglected
+   ones get taxed on the fat one and tip into CRISIS. Peak is a ratcheting high-water mark
+   (anti-dodge). Tax ramps ~24% → 60% cap (reduced to compensate for taxing the max). */
+const DED_FLAT0=25, DED_FLATR=1.25;   // flat base: 25 → 31 → 39 … × 1.25/week
+const DED_TAX0=0.24, DED_TAXSTEP=0.05, DED_TAXCAP=0.60;
+const dedFlat=k=>Math.round(DED_FLAT0*Math.pow(DED_FLATR,k-1));
+const dedTax=k=>Math.min(DED_TAXCAP,DED_TAX0+DED_TAXSTEP*(k-1));
+const dedPeakHi=()=>Math.max(0,...RES.map(r=>(S.dedPeak?S.dedPeak[r]:S.res[r]))); // your richest peak
+const dedFor=(r,k)=>dedFlat(k)+Math.round(dedTax(k)*dedPeakHi()); // same bill for every resource
+let AUTO_END=true; // empty hand auto-ends the day (headless sim flips this off)
+
+/* ================= CARD LIBRARY ================= */
+let UID=0;
+const C=(name,type,icon,op,x)=>Object.assign({name,type,icon,op,lvl:0,uid:++UID},x);
+const LIB={
+ /* ---- GUỒNG MÁY 🏢 : simple, efficient ---- */
+ racer:   ()=>C('Bành Trướng','Capital','📈','racer',{base:1,inc:1}),
+ overtime:()=>C('Tăng Ca','Special','⏰','repnext',{base:1,inc:1}),
+ ladder:  ()=>C('Thăng Tiến','Special','🪜','uphand',{base:1,inc:1}),
+ ratrace: ()=>C('Guồng Quay','Special','🏁','draw',{base:2,inc:1}),
+ payday:  ()=>C('Ngày Lương','Gain','💰','gain',{res:'cur',base:25,inc:15}),
+ supply:  ()=>C('Nhập Hàng','Gain','📦','gain',{res:'mat',base:25,inc:15}),
+ recruit: ()=>C('Tuyển Dụng','Gain','📯','gain',{res:'man',base:25,inc:15}),
+ /* ---- CỖ MÁY VẮT KIỆT 🩸 ---- */
+ breed:   ()=>C('Xưởng Nhân Lực','Special','👥','breed',{base:20,inc:10}),
+ spawn:   ()=>C('Tuyển Ồ Ạt','Gain','🧫','gain',{res:'man',base:40,inc:25}),
+ bmadd:   ()=>C('Nạp Liệu','Special','🩸','bmadd',{base:1,inc:1}),
+ bmrun:   ()=>C('Vắt Kiệt','Capital','🗡️','bmrun',{base:1,inc:1}),
+ /* ---- TỰ ĐỘNG HÓA 🕳️ ---- */
+ fab:     ()=>C('Xưởng Chế Tạo','Special','🏗️','parts',{base:2,inc:1,repSin:true}),
+ asmline: ()=>C('Dây Chuyền','Special','🏭','parts',{base:1,inc:1,repSin:true}),
+ dividend:()=>C('Cổ Tức','Gain','☄️','gain',{res:'low',base:15,inc:10,repSin:true}),
+ scholar: ()=>C('Nhà Nghiên Cứu','Special','📚','draw',{base:2,inc:1}),
+ liquidate:()=>C('Thanh Lý','Gain','🪙','gain',{res:'cur',base:25,inc:15}),
+ smelt:   ()=>C('Luyện Kim','Gain','🧱','gain',{res:'mat',base:25,inc:15}),
+ enlist:  ()=>C('Tuyển Thêm','Gain','🪖','gain',{res:'man',base:25,inc:15}),
+ /* ---- NEUTRAL 🃟 ---- */
+ petty:   ()=>C('Quỹ Lặt Vặt','Gain','🪙','gain',{res:'low',base:20,inc:15}),
+ coffee:  ()=>C('Giải Lao','Special','☕','draw',{base:1,inc:1}),
+ promo:   ()=>C('Khen Thưởng','Special','🎖️','uphand',{base:1,inc:1}),
+ slush:   ()=>C('Quỹ Đen','Special','🧰','stackgain',{base:10,inc:10}),
+ seminar: ()=>C('Hội Thảo Truyền Lửa','Special','📣','seminar',{base:20,inc:10}),
+ dejavu:  ()=>C('Déjà Vu','Special','🌀','repnext',{base:2,inc:1}),
+};
+const NEUTRALS=['petty','coffee','promo','slush','seminar','dejavu'];
+
+const STYLES={
+ capital:{name:'GUỒNG MÁY',icon:'🏢',diff:'★ dễ',
+   rule:'Đơn giản, hiệu quả. Nâng cấp BÀNH TRƯỚNG tới bến rồi lặp lại.',
+   passive:'🏢 GUỒNG QUAY: mỗi sáng rút thêm 1 lá bài.',
+   deck:['racer','overtime','ladder','ratrace','ratrace','payday','payday','supply','supply','recruit','recruit','petty'],
+   pool:['racer','overtime','ladder','ratrace','payday','supply','recruit']},
+ bleed:{name:'CỖ MÁY VẮT KIỆT',icon:'🩸',diff:'★★ hỗn loạn',
+   rule:'Tuyển ồ ạt công nhân, nạp cho CỖ MÁY, rồi KÍCH HOẠT để nghiền NHÂN LỰC thành tài nguyên và ĐIỂM.',
+   passive:'🩸 CỖ MÁY: mỗi lần KÍCH HOẠT nghiền NHÂN LỰC thành tài nguyên thấp nhất và sinh ĐIỂM. NHÂN LỰC mất đi được dồn vào ⚡ NĂNG LƯỢNG. Mỗi sáng nếu chưa có stack máy thì +1.',
+   deck:['breed','breed','breed','spawn','spawn','bmadd','bmadd','bmadd','bmrun','bmrun','bmrun','recruit'],
+   pool:['breed','spawn','bmadd','bmrun','recruit']},
+ singularity:{name:'TỰ ĐỘNG HÓA',icon:'🕳️',diff:'★★★ chậm mà chắc',
+   rule:'Chế LINH KIỆN. Đủ 5 thì tạo một BƯỚC NHẢY, mỗi bước trả ĐIỂM, và mọi lá bài lặp ×SIN.',
+   passive:'🕳️ ĐIỂM TỚI HẠN: cứ đủ 5 LINH KIỆN (+1 mỗi BƯỚC NHẢY đã tạo) thì tạo 1 BƯỚC NHẢY. Bước thứ n cho n ĐIỂM.',
+   deck:['fab','fab','asmline','asmline','dividend','dividend','scholar','scholar','liquidate','smelt','enlist','enlist'],
+   pool:['fab','asmline','dividend','scholar','liquidate','smelt','enlist']},
+};
+
+/* ================= POLICIES (stackable, bought in shop) ================= */
+const POLICIES=[
+ /* --- general --- */
+ {id:'pol_go',    icon:'📈',name:'Thưởng Quý',         text:'+10% HIỆU SUẤT'},
+ {id:'pol_cheese',icon:'💵',name:'Bản Vị Vàng',       text:'TIỀN thu vào +25%'},
+ {id:'pol_obs',   icon:'♻️',name:'Hao Mòn Có Kế Hoạch',text:'Mỗi sáng: lá thấp cấp nhất +1 cấp'},
+ {id:'pol_first', icon:'⏰',name:'Lệnh Tăng Ca',       text:'Lá đầu tiên mỗi ngày chơi +1 lần'},
+ {id:'pol_skim',  icon:'🪙',name:'Bớt Xén Lương',      text:'Mỗi sáng: +10% NHÂN LỰC thành TIỀN'},
+ {id:'pol_disc',  icon:'🏷️',name:'Vận Động Hành Lang', text:'Giá chợ & cửa hàng −15%'},
+ {id:'pol_ins',   icon:'☂️',name:'Bảo Hiểm Khủng Hoảng',text:'Phạt KHỦNG HOẢNG −50%'},
+ {id:'pol_capg',  icon:'💹',name:'Lãi Vốn',            text:'+8 TIỀN mỗi ĐIỂM kiếm được'},
+ {id:'pol_scrip', icon:'🎫',name:'Phiếu Nội Bộ',       text:'NHÂN LỰC mất đi → +50% NĂNG LƯỢNG'},
+ {id:'pol_updraft',icon:'🎈',name:'Trợ Cấp',           text:'Mỗi sáng: 1 lá ngẫu nhiên trên tay +1'},
+ {id:'pol_lowdraw',icon:'💧',name:'Nhỏ Giọt',          text:'Mỗi lá rút: +10% tài nguyên thấp nhất'},
+ /* --- ĐẾ CHẾ --- */
+ {id:'pol_racer', icon:'📈',name:'Thưởng Bành Trướng', text:'BÀNH TRƯỚNG tự nâng cấp +1 mạnh hơn',deck:'capital'},
+ /* --- CỖ MÁY VẮT KIỆT --- */
+ {id:'pol_blood', icon:'🔋',name:'Kho Năng Lượng',     text:'NĂNG LƯỢNG nhận +25%',deck:'bleed'},
+ {id:'pol_hemorrhage',icon:'💧',name:'Bòn Rút Kép',    text:'NHÂN LỰC mất đi → gấp đôi NĂNG LƯỢNG',deck:'bleed'},
+ {id:'pol_critmass',icon:'⚗️',name:'Nén Năng Lượng',   text:'Mỗi 50 NĂNG LƯỢNG → +1 stack CỖ MÁY',deck:'bleed'},
+ {id:'pol_overbreed',icon:'👥',name:'Tăng Quân Số',text:'Mỗi sáng: +30 (+1 mỗi 100 NL đã dùng) NHÂN LỰC',deck:'bleed'},
+ {id:'pol_bloodcap',icon:'🗡️',name:'Thuế Nhân Công',  text:'CỖ MÁY trả thêm +5% ĐIỂM mỗi NHÂN LỰC mất',deck:'bleed'},
+ /* --- TỰ ĐỘNG HÓA --- */
+ {id:'pol_parts', icon:'⚛️',name:'Dư Linh Kiện',       text:'Mỗi sáng: +2 LINH KIỆN',deck:'singularity'},
+ {id:'pol_fusion',icon:'🌟',name:'Hiệu Suất Nhiệt Hạch',text:'Mỗi BƯỚC NHẢY trả thêm +1 ĐIỂM',deck:'singularity'},
+ {id:'pol_perpetual',icon:'🔄',name:'Chuyển Động Vĩnh Cửu',text:'Mỗi sáng: rút thêm +1 lá',deck:'singularity'},
+];
+const polN=id=>S.policies[id]||0;
+
+/* ================= EVENTS (30% at day start, +5%/miss) ================= */
+const EVENTS=[
+ {good:1,icon:'🧾',name:'Hoàn Thuế',    f:w=>gain('cur',30+10*w),        t:w=>`Lỗi giấy tờ có lợi cho bạn. +${30+10*w} TIỀN.`},
+ {good:1,icon:'🚌',name:'Làn Sóng Nhập Cư',f:w=>gain('man',30+10*w),     t:w=>`Người lao động mới vừa tới. +${30+10*w} NHÂN LỰC.`},
+ {good:1,icon:'🏗️',name:'Bãi Phế Liệu', f:w=>gain('mat',30+10*w),        t:w=>`Một đối thủ phá sản. +${30+10*w} VẬT TƯ.`},
+ {good:1,icon:'💡',name:'Cảm Hứng',     f:w=>upRandomHand(1,true),       t:w=>'Một lá bài trên tay +1 CẤP.'},
+ {good:1,icon:'☕',name:'Ca Đôi',       f:w=>draw(2),                    t:w=>'Ai cũng ở lại muộn. RÚT 2 LÁ.'},
+ {good:1,icon:'📢',name:'Thị Trường Bùng Nổ',f:w=>S.timed.push({k:'go',pct:20,days:2}), t:w=>'+20% HIỆU SUẤT trong 2 ngày.'},
+ {good:0,icon:'🕶️',name:'Biển Thủ',    f:w=>gain('cur',-(25+10*w)),     t:w=>`Ai đó thụt két. −${25+10*w} TIỀN.`},
+ {good:0,icon:'🪧',name:'Đình Công',    f:w=>gain('man',-(25+10*w)),     t:w=>`Công nhân đòi phẩm giá. −${25+10*w} NHÂN LỰC.`},
+ {good:0,icon:'🦠',name:'Kho Mục Nát',  f:w=>gain('mat',-(25+10*w)),     t:w=>`Mọi thứ lên mốc. −${25+10*w} VẬT TƯ.`},
+ {good:0,icon:'🔨',name:'Phá Hoại',     f:w=>downRandomHand(),           t:w=>'Một lá bài trên tay −1 CẤP.'},
+ {good:0,icon:'📋',name:'Kiểm Toán Bất Ngờ',f:w=>RES.forEach(r=>gain(r,-(12+5*w))), t:w=>`Giấy tờ có giá của nó. −${12+5*w} cho MỌI THỨ.`},
+];
+
+/* ================= STATE ================= */
+let S=null, Q=[], modalOpen=false;
+function newGame(){
+  UID=0;
+  S={res:{cur:60,mat:60,man:60},cap:0,stack:0,stackLost:0,bm:0,sin:0,parts:0,sinBuilt:0,
+     day:0,dedCount:0,crisisDays:0,msIdx:0,evCh:0.30,
+     dedPeak:{cur:60,mat:60,man:60},  // ratcheting high-water mark per resource, the deduction taxes THIS, never shrinks when you spend
+     hand:[],drawPile:[],discPile:[],
+     policies:{},timed:[],nextRepeat:0,playedToday:0,refToday:0,desToday:0,
+     patch:null,shop:null,style:null,over:false,
+     stats:{played:0,capFrom:0,drawn:0,bundles:0}};
+  Q=[];document.getElementById('feed').innerHTML='';
+  styleSelect();
+}
+
+function styleSelect(){
+  modal(`<h2>🏢 ĐẾ CHẾ</h2>
+    <p class="sub" style="text-align:left;max-width:560px;margin:0 auto 16px">
+    Trò chơi thẻ bài xây tập đoàn. Mục tiêu: dồn <b>ĐIỂM XẾP HẠNG</b> qua các mốc <b style="color:var(--cap)">5 → 55 → 555 → 5555</b> để thắng, trước khi kỳ <b>CHI PHÍ BÀNH TRƯỚNG</b> hằng tuần vắt kiệt tài nguyên của bạn.<br><br>
+    Thẻ bài miễn phí, cứ kéo lên bàn để chơi. Chọn một mô hình tăng trưởng:</p>
+    <div class="choices">`+
+    Object.keys(STYLES).map(k=>{const st=STYLES[k];
+      return `<button class="opt" onclick="startRun('${k}')"><span class="big">${st.icon}</span><b>${st.name}</b>
+        <small>${st.rule}</small><small style="margin-top:6px;color:var(--stack)">${st.passive}</small>
+        <div class="price">${st.diff}</div></button>`;}).join('')+
+    `</div>`,'');
+}
+function startRun(k){
+  S.style=k;
+  S.drawPile=shuffle(STYLES[k].deck.map(id=>LIB[id]()));
+  closeModal();
+  beginDay(); // day 0 → 1
+}
+
+/* ================= HELPERS ================= */
+const $=id=>document.getElementById(id);
+const rnd=a=>a[(Math.random()*a.length)|0];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+const wk=()=>S.day/7;
+const allCards=()=>S.hand.concat(S.drawPile,S.discPile);
+const shopDisc=()=>Math.max(0.4,1-0.15*polN('pol_disc'));
+const price=x=>Math.max(1,Math.round(x*shopDisc()));
+
+/* level math (v9): value = base + inc × level */
+const nv=c=>Math.max(0,Math.round((c.base||0)+(c.inc||0)*(c.lvl||0)));
+const cardLeaves=c=>c.fused?c.fused:[c];
+/* bundle math (v8): 0s → sum+1 · 1s → sum · else MULTIPLY · cap 256 */
+function combLvl(a,b){const v=(a===0||b===0)?a+b+1:(a===1||b===1)?a+b:a*b;return Math.min(LVL_CAP,v);}
+function mergeCards(a,b){
+  const out=[];
+  cardLeaves(a).concat(cardLeaves(b)).forEach(l=>{
+    const ex=out.find(o=>o.name===l.name);
+    if(ex)ex.lvl=combLvl(ex.lvl||0,l.lvl||0);
+    else out.push({...l});
+  });
+  if(out.length===1)return Object.assign(out[0],{uid:++UID});
+  return {uid:++UID,name:out.map(o=>o.name).join(' + '),type:'Bundle',
+    icon:out.map(o=>o.icon).join(''),fused:out,op:'fused',kw:'BUNDLED ×'+out.length};
+}
+
+/* dynamic card text, numbers always reflect current level */
+function leafText(l){
+  const v=nv(l);
+  switch(l.op){
+    case 'racer':   return `+${v} ĐIỂM, RỒI TỰ NÂNG CẤP +${2+polN('pol_racer')}`;
+    case 'repnext': return `LÁ TIẾP THEO CHƠI THÊM ${v} LẦN`;
+    case 'uphand':  return `NÂNG CẤP 1 LÁ NGẪU NHIÊN TRÊN TAY +${v}`;
+    case 'draw':    return `RÚT ${v} LÁ`;
+    case 'gain':    return `+${v} ${RN[l.res]}`+(l.repSin?' · LẶP ×SIN':'');
+    case 'breed':   return `+${v} + ${30+10*(l.lvl||0)}% NHÂN LỰC`;
+    case 'bmadd':   return `+${v} STACK CỖ MÁY`;
+    case 'bmrun':   return `KÍCH HOẠT CỖ MÁY${v>1?` ${v} LẦN`:''}`;
+    case 'parts':   return `CHẾ ${v} LINH KIỆN · LẶP ×SIN`;
+    case 'stackgain':return `+${v} NĂNG LƯỢNG`;
+    case 'seminar': return `+${v}% HIỆU SUẤT TRONG 3 NGÀY`;
+    default: return '???';
+  }
+}
+const cardText=c=>cardLeaves(c).map(l=>leafText(l)+((l.lvl||0)>0?` [L${l.lvl}]`:'')).join('  &  ');
+
+/* ================= ECONOMY ================= */
+function gainOut(){
+  let m=1+0.10*polN('pol_go');
+  S.timed.forEach(t=>{if(t.k==='go')m+=t.pct/100;});
+  return Math.max(0.1,m);
+}
+function gain(r,amt,opts){
+  opts=opts||{};
+  if(r==='low')r=RES.reduce((a,b)=>S.res[a]<=S.res[b]?a:b);
+  if(amt>0&&!opts.raw){
+    amt=Math.round(amt*gainOut()*(r==='cur'?1+0.25*polN('pol_cheese'):1));
+  }
+  if(amt===0)return;
+  if(r==='man'&&amt<0){ // losing manpower feeds the bleed machine
+    const loss=-amt;
+    const hem=1+polN('pol_hemorrhage'); // Hemorrhage doubles the bleed per stack
+    if(S.style==='bleed')addStack(loss*hem);
+    if(polN('pol_scrip'))addStack(Math.round(loss*0.5*polN('pol_scrip')));
+  }
+  S.res[r]+=amt;
+  if(S.dedPeak&&S.res[r]>S.dedPeak[r])S.dedPeak[r]=S.res[r]; // ratchet the high-water mark the deduction taxes
+  spawnFloat('v-'+r,(amt>0?'+':'')+amt,amt>0?'#4fae80':'#f85149');
+  if(!opts.silent)feed(amt>0?'good':'bad',`${amt>0?'+':''}${amt} ${RN[r]}`);
+  checkPatch();
+}
+function addStack(n){
+  if(n<=0)return;
+  n=Math.round(n*(1+0.25*polN('pol_blood'))); // Blood Bank: +25% STACK per stack
+  S.stack+=n;
+  spawnFloat('pillrow',`+${n}⚡`,'#2f6fb0');
+  checkStackPolicies();
+}
+function spendStack(n){ // consume STACK and remember it for "stack lost" scaling
+  n=Math.min(n,S.stack);if(n<=0)return 0;
+  S.stack-=n;S.stackLost=(S.stackLost||0)+n;return n;
+}
+/* Coagulation: every 50 STACK is spent for BLOOD MACHINE stacks (also counts as "stack spent").
+   Batched + capped per call so a huge STACK pile can't stall the loop. */
+function checkStackPolicies(){
+  const per=polN('pol_critmass');
+  if(!per||S.stack<50)return;
+  const n=Math.min(LOOP_CAP,Math.floor(S.stack/50));
+  spendStack(50*n);S.bm+=per*n;
+  firePolicy('pol_critmass',`+${per*n} CỖ MÁY`);
+}
+/* BLOOD MACHINE: per activation, convert (10 + 10% of MANPOWER) into your LOWEST resource,
+   and gain (BM/5) + 5% of that conversion output as CAPITAL. Then, as a STACK sink: while
+   you hold ≥50 STACK, consume 50 (up to BM/5 times) for +10 LOWEST each. A leveled/repeating
+   play repeats the whole activation. BATCHED + capped so it can never freeze. */
+function activateBloodMachine(mult){
+  mult=Math.max(1,Math.min(LOOP_CAP,mult||1));
+  if(S.bm<=0){feed('bad','🩸 chưa có stack CỖ MÁY để kích hoạt');return;}
+  const n=Math.floor(S.bm/5); // BM/5, feeds both the CAPITAL flat term and the STACK-sink count
+  let manLost=0,stackDrained=0,toLow=0,capF=0;
+  for(let a=0;a<mult;a++){
+    const man=Math.max(0,S.res.man-manLost);
+    const conv=Math.min(man,10+Math.round(man*0.10)); // convert 10 + 10% MANPOWER
+    manLost+=conv; toLow+=conv;
+    capF += n + 0.05*conv;                            // CAPITAL = BM/5 + 5% of conversion
+    const times=Math.min(n,Math.floor((S.stack-stackDrained)/50)); // STACK sink: 50⚡ → +10 LOWEST
+    if(times>0){ stackDrained+=50*times; toLow+=10*times; }
+  }
+  if(manLost>0)gain('man',-manLost,{silent:true}); // loss → BLEED PROTOCOL banks STACK
+  if(stackDrained>0)spendStack(stackDrained);
+  /* the machine grinds rats into CUR/MAT, never back into MANPOWER (lowest excludes man) */
+  if(toLow>0)gain(S.res.cur<=S.res.mat?'cur':'mat',toLow,{silent:true});
+  const cap=Math.round(capF*(1+0.5*polN('pol_bloodcap'))); // Vein Tax: +50% per copy
+  feed('good',`🩸 CỖ MÁY ×${mult}: -${manLost} NHÂN LỰC -${stackDrained}⚡ → +${toLow} TN THẤP · +${cap} ĐIỂM`);
+  if(cap>0)capGain(cap);
+}
+function capGain(n){
+  if(n<=0||S.over)return;
+  S.cap+=n;S.stats.capFrom+=n;
+  if(polN('pol_capg')){const g=8*polN('pol_capg')*n;gain('cur',g,{raw:true,silent:true});firePolicy('pol_capg',`+${g} TIỀN`);}
+  const el=$('capnum');el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
+  spawnFloat('capnum',`+${n} ĐIỂM`,'#4fae80');
+  feed('day',`🏆 +${n} ĐIỂM → ${S.cap}`);
+  checkMilestones();
+}
+function checkMilestones(){
+  while(S.msIdx<MS.length&&S.cap>=MS[S.msIdx]){
+    const m=MS[S.msIdx];S.msIdx++;
+    if(m===5555){win();return;}
+    RES.forEach(r=>gain(r,100,{raw:true,silent:true}));
+    feed('day',`🏁 ĐẾ CHẾ BÀNH TRƯỚNG! Cán mốc ${m}, +100 cho mọi tài nguyên`);
+    celebrate(m);
+  }
+  render();
+}
+const sinNeed=()=>5+Math.floor(S.sinBuilt/2); // cost creeps up so the chain reaction decelerates instead of exploding
+function checkCritMass(){
+  if(S.style!=='singularity')return;
+  while(S.parts>=sinNeed()){
+    S.parts-=sinNeed();S.sinBuilt++;S.sin++;
+    feed('ev',`🕳️ BƯỚC NHẢY #${S.sinBuilt} HOÀN THÀNH`);
+    capGain(S.sinBuilt+polN('pol_fusion')); // Fusion Yield: +1 CAPITAL per singularity
+  }
+}
+
+/* ================= DRAW / PILES ================= */
+/* DECK → HAND → DISCARD. Draws pull ONLY from the DECK. During the day an empty
+   DECK just fizzles, the DISCARD is NOT recycled mid-turn (no drawing back the
+   cards you just played). The discard only folds into the deck at DAY START
+   (reshuffleForMorning), so it's never "drawn from" during play. */
+function draw(n){
+  let got=0,fizzled=false;
+  for(let i=0;i<n;i++){
+    if(!S.drawPile.length){fizzled=true;break;} // deck spent → stop, do NOT touch the discard
+    const c=S.drawPile.pop();c._deal=true;S.hand.push(c);S.stats.drawn++;got++;
+    if(polN('pol_lowdraw')){ // Trickle-Down: each card drawn feeds the lowest resource
+      const lr=RES.reduce((a,b)=>S.res[a]<=S.res[b]?a:b);
+      gain(lr,Math.max(1,Math.round(Math.abs(S.res[lr])*0.10*polN('pol_lowdraw'))),{silent:true});
+    }
+  }
+  if(fizzled&&S.discPile.length)feed('bad','🚫 hết bài, chồng BỎ chỉ xáo lại vào đầu ngày');
+  if(got){const dp=$('drawpile');if(dp&&dp.classList){dp.classList.remove('bump');void dp.offsetWidth;dp.classList.add('bump');}}
+  render();
+}
+/* the ONLY place the discard returns to the deck: day start, if the deck can't
+   cover the morning draw. never mid-turn. */
+function reshuffleForMorning(need){
+  if(S.drawPile.length<need&&S.discPile.length){
+    S.drawPile=shuffle(S.drawPile.concat(S.discPile));S.discPile=[];
+    feed('ev','🔀 ngày mới, chồng BỎ được xáo lại vào bộ bài');
+  }
+}
+function upRandomHand(n){
+  if(!S.hand.length)return;
+  const c=rnd(S.hand),l=rnd(cardLeaves(c));
+  l.lvl=Math.min(LVL_CAP,(l.lvl||0)+n);
+  feed('ev',`🪜 ${l.name} +${n} CẤP → L${l.lvl}`);
+  render();
+}
+function downRandomHand(){
+  const ok=S.hand.filter(c=>cardLeaves(c).some(l=>(l.lvl||0)>0));
+  if(!ok.length)return;
+  const c=rnd(ok),l=rnd(cardLeaves(c).filter(l=>(l.lvl||0)>0));
+  l.lvl--;feed('bad',`🔨 ${l.name} −1 CẤP → L${l.lvl}`);
+}
+
+/* ================= PLAY ================= */
+function playCard(uid,dropRect){
+  if(S.over||modalOpen)return;
+  const i=S.hand.findIndex(c=>c.uid===uid);
+  if(i<0)return;
+  const c=S.hand[i];
+  if(c.sabUntil&&c.sabUntil>S.day){feed('bad',`🚫 ${c.name} đang bị PHÁ HOẠI (đến ngày ${c.sabUntil})`);return;}
+  /* fly from where the card was dropped, else from its slot in the fan */
+  let fromRect=dropRect||null;
+  if(!fromRect){
+    const dom=$('hand')&&$('hand').querySelector?$('hand').querySelector(`.card[data-uid="${uid}"]`):null;
+    if(dom&&dom.getBoundingClientRect)fromRect=dom.getBoundingClientRect();
+  }
+  S.hand.splice(i,1);
+  const extra=S.nextRepeat;S.nextRepeat=0;
+  const firstBonus=(S.playedToday===0?polN('pol_first'):0);
+  if(firstBonus)firePolicy('pol_first',`${c.name} +${firstBonus}`);
+  const times=Math.min(LOOP_CAP,1+extra+firstBonus); // hard cap so a runaway repeat can't freeze the game
+  if(times>1)feed('ev',`🔁 ${c.name} chơi ×${times}`);
+  for(let t=0;t<times;t++)applyCard(c);
+  S.discPile.push(c);
+  S.playedToday++;S.stats.played++;
+  if(S.patch&&!S.patch.done)S.patch.plays++;
+  checkPatch();render();
+  flyToPile(fromRect,c.icon,'discpile');
+  maybeAutoEnd();
+}
+/* nothing left to play → roll the day forward on its own (after the fly settles) */
+function maybeAutoEnd(){
+  if(!AUTO_END||S.over||modalOpen||S.hand.length)return;
+  setTimeout(()=>{if(AUTO_END&&!S.over&&!modalOpen&&!S.hand.length&&!_drag)endDay();},700);
+}
+function applyCard(c){cardLeaves(c).forEach(l=>applyLeaf(l));}
+function applyLeaf(l){
+  const rep=l.repSin?Math.min(LOOP_CAP,Math.max(1,Math.floor(S.sin))):1;
+  for(let i=0;i<rep;i++)applyOnce(l);
+}
+function applyOnce(l){
+  const v=nv(l);
+  switch(l.op){
+    case 'gain': gain(l.res,v);break;
+    case 'draw': draw(Math.min(20,v));break;
+    case 'repnext': S.nextRepeat+=v;feed('ev',`👑 lá tiếp theo +${v} lần chơi`);break;
+    case 'uphand': upRandomHand(v);break;
+    case 'racer':
+      capGain(v);
+      l.lvl=Math.min(LVL_CAP,(l.lvl||0)+2+polN('pol_racer'));
+      feed('ev',`📈 Bành Trướng tự nâng cấp → L${l.lvl}`);break;
+    case 'breed':
+      gain('man',v+Math.round(Math.max(0,S.res.man)*(30+10*(l.lvl||0))/100));break;
+    case 'bmadd': S.bm+=v;feed('ev',`🩸 +${v} STACK CỖ MÁY (${S.bm})`);break;
+    case 'bmrun': activateBloodMachine(v);break;
+    case 'parts': S.parts+=v;feed('ev',`⚛️ +${v} LINH KIỆN (${S.parts})`);checkCritMass();break;
+    case 'stackgain': addStack(v);break;
+    case 'seminar': S.timed.push({k:'go',pct:v,days:3});feed('ev',`📣 +${v}% HIỆU SUẤT trong 3 ngày`);break;
+  }
+}
+
+/* ================= DAY CYCLE ================= */
+function beginDay(){
+  S.day++;S.playedToday=0;S.refToday=0;S.desToday=0;S.nextRepeat=0;
+  feed('day',`◆ NGÀY ${S.day}`);
+  /* 1. hand cap: trim to 10 randomly (no triggers) */
+  let trimmed=0;
+  while(S.hand.length>HAND_CAP){
+    const i=(Math.random()*S.hand.length)|0;
+    S.discPile.push(S.hand.splice(i,1)[0]);trimmed++;
+  }
+  if(trimmed)feed('bad',`🗑 tay quá ${HAND_CAP}: bỏ ${trimmed} lá ngẫu nhiên`);
+  /* 2. crisis daily bleed */
+  if(RES.some(r=>S.res[r]<0)){
+    const p=Math.max(1,Math.round((5+20*S.day/7)*Math.pow(0.5,polN('pol_ins'))));
+    RES.forEach(r=>gain(r,-p,{silent:true}));
+    feed('bad',`🚨 KHỦNG HOẢNG: −${p} cho mọi tài nguyên`);
+  }
+  /* 3. morning policies (each visualizes via firePolicy → pulse + float) */
+  if(S.style==='bleed'&&S.bm<=0){S.bm=1;feed('ev','🩸 CỖ MÁY được mồi (+1 stack)');} // deck passive: always have fuel
+  if(polN('pol_obs')){
+    for(let i=0;i<polN('pol_obs');i++){
+      const cards=allCards();if(!cards.length)break;
+      let low=null,lowL=null;
+      cards.forEach(c=>cardLeaves(c).forEach(l=>{if(!lowL||(l.lvl||0)<(lowL.lvl||0)){low=c;lowL=l;}}));
+      if(lowL){lowL.lvl=Math.min(LVL_CAP,(lowL.lvl||0)+1);firePolicy('pol_obs',`${lowL.name} → L${lowL.lvl}`);}
+    }
+  }
+  if(polN('pol_skim')&&S.res.man>0){const g=Math.round(S.res.man*0.10*polN('pol_skim'));gain('cur',g,{silent:true});firePolicy('pol_skim',`+${g} TIỀN`);}
+  if(polN('pol_updraft')){for(let i=0;i<polN('pol_updraft');i++)upRandomHand(1);firePolicy('pol_updraft','tay +1 cấp');}
+  if(polN('pol_parts')){S.parts+=2*polN('pol_parts');firePolicy('pol_parts',`+${2*polN('pol_parts')} LINH KIỆN`);checkCritMass();}
+  if(polN('pol_overbreed')){const g=(30+Math.floor((S.stackLost||0)/100))*polN('pol_overbreed');gain('man',g,{silent:true});firePolicy('pol_overbreed',`+${g} NHÂN LỰC`);}
+  /* 4. day start is the ONLY reshuffle point: fold the discard back in if the deck
+        can't cover the morning draw, then draw (day 1 = 5, else 2, +1 CAPITAL, +perpetual) */
+  const morning=(S.day===1?5:2)+(S.style==='capital'?1:0)+polN('pol_perpetual');
+  reshuffleForMorning(morning);
+  draw(morning);
+  if(polN('pol_perpetual'))firePolicy('pol_perpetual',`draw +${polN('pol_perpetual')}`);
+  /* 5. timed effects tick down at day START so "3 days" spans 3 play phases */
+  S.timed.forEach(t=>t.days--);
+  S.timed=S.timed.filter(t=>t.days>0);
+  /* 6. morning modals: rough patch (day 14, 28…) then event roll */
+  if(S.day%14===0)Q.push(stepPatchStart);
+  if(S.day>1&&!(S.day%14===0)){
+    if(Math.random()<S.evCh){S.evCh=0.30;Q.push(stepEvent);}
+    else S.evCh=Math.min(0.95,S.evCh+0.05);
+  }
+  render();
+  step();
+}
+function endDay(){
+  if(S.over||modalOpen)return;
+  /* build the evening chain */
+  if(S.patch&&!S.patch.done&&S.day>=S.patch.deadline)Q.push(stepPatchFail);
+  else if(S.patch&&S.patch.done)S.patch=null;
+  if(S.day%3===0)Q.push(stepShopOpen);
+  Q.push(stepDayChoice);
+  if(S.day%7===0)Q.push(stepDeduction);
+  Q.push(()=>{ // nightfall: crisis counter, then next day
+    if(RES.some(r=>S.res[r]<0)){S.crisisDays++;
+      feed('bad',`🚨 ngày ${S.crisisDays} KHỦNG HOẢNG`);}
+    else S.crisisDays=0;
+    if(S.over)return;
+    closeModal();beginDay();
+  });
+  step();
+}
+function step(){
+  if(S.over)return;
+  if(Q.length){Q.shift()();}
+  else{closeModal();render();}
+}
+
+/* ---- deduction: every 7 days. ONE bill (flat + tax% of your HIGHEST resource peak),
+       taken off EVERY resource, hoard one resource and the rest pay for it. ---- */
+function stepDeduction(){
+  S.dedCount++;
+  const k=S.dedCount,flat=dedFlat(k),tax=dedTax(k),d=dedFor('cur',k);
+  RES.forEach(r=>gain(r,-d,{silent:true}));
+  feed('bad',`📉 CHI PHÍ BÀNH TRƯỚNG #${k}: −${d} cho mọi tài nguyên`);
+  const inCrisis=RES.some(r=>S.res[r]<0);
+  if(S.crisisDays>2){lose(`Thanh tra ập tới và thấy bạn đã ${S.crisisDays} ngày chìm trong KHỦNG HOẢNG. Tập đoàn bị tịch thu.`);return;}
+  modal(`<h2>📉 CHI PHÍ BÀNH TRƯỚNG #${k}</h2>
+    <p class="sub">Đế chế càng lớn, chi phí duy trì càng nặng. <b style="color:#f85149">−${d}</b> cho <b>mọi</b> tài nguyên, gồm ${flat} cố định cộng ${Math.round(tax*100)}% của đỉnh tài nguyên cao nhất (${dedPeakHi()}). Tiêu bớt cũng không giảm được, và bỏ bê một tài nguyên chỉ khiến nó rơi vào KHỦNG HOẢNG.<br>
+    <span style="color:var(--dim)">Tuần sau (ít nhất): −${dedFor('cur',k+1)} mỗi loại.</span></p>
+    ${inCrisis?'<p style="color:#f85149;font-weight:800">⚠ BẠN ĐANG KHỦNG HOẢNG. Hồi phục trên 0 thật nhanh; 3+ ngày khủng hoảng đúng kỳ chi phí là THUA.</p>':''}
+    <div class="choices"><button class="opt" onclick="step()"><b>TRẢ CHI PHÍ</b></button></div>`,'warn');
+}
+
+/* ---- events ---- */
+function stepEvent(){
+  const w=Math.floor(wk());
+  const e=rnd(EVENTS);
+  e.f(w);
+  modal(`<h2>${e.icon} ${e.name}</h2><p class="sub">${e.t(w)}</p>
+    <div class="choices"><button class="opt" onclick="step()"><b>OK</b></button></div>`,
+    e.good?'good':'warn');
+  // (event names & text are translated in the EVENTS table)
+}
+
+/* ---- rough patch: every 14 days, demand within 3 days ---- */
+function stepPatchStart(){
+  const w=Math.floor(wk());
+  const kinds=[
+    {k:'res',r:rnd(RES),amt:120+40*w},
+    {k:'plays',n:10+2*w},
+    {k:'adds',n:2},
+  ];
+  const req=rnd(kinds);
+  req.txt=req.k==='res'?`Giữ ${req.amt}+ ${RN[req.r]}`:
+          req.k==='plays'?`Chơi ${req.n} lá bài`:
+          `Thêm ${req.n} lá mới vào bộ bài`;
+  S.patch={req,deadline:S.day+2,plays:0,adds:0,done:false};
+  modal(`<h2>⛈️ SÓNG GIÓ</h2>
+    <p class="sub">Hội đồng cổ đông ra một yêu sách:</p>
+    <p style="font-size:20px;font-weight:800;color:#c07a2e">${req.txt}</p>
+    <p class="sub">Hạn chót: <b>cuối NGÀY ${S.patch.deadline}</b>, nếu không sẽ lãnh hậu quả.</p>
+    <div class="choices"><button class="opt" onclick="step()"><b>ĐÃ RÕ</b></button></div>`,'warn');
+  checkPatch();
+}
+function checkPatch(){
+  if(!S.patch||S.patch.done)return;
+  const q=S.patch.req;
+  const ok=q.k==='res'?S.res[q.r]>=q.amt:
+           q.k==='plays'?S.patch.plays>=q.n:
+           S.patch.adds>=q.n;
+  if(ok){S.patch.done=true;
+    RES.forEach(r=>gain(r,30,{raw:true,silent:true}));
+    feed('day','🧯 Vượt SÓNG GIÓ! +30 cho mọi tài nguyên');}
+}
+function stepPatchFail(){
+  const w=Math.floor(wk());
+  const pens=[
+    {t:`CẮT SẢN LƯỢNG: −30% HIỆU SUẤT trong 3 ngày`,f:()=>S.timed.push({k:'go',pct:-30,days:3})},
+    {t:`PHÁ HOẠI: 2 lá ngẫu nhiên bị vô hiệu 3 ngày`,f:()=>{
+      const ok=allCards().filter(c=>!c.sabUntil||c.sabUntil<=S.day);
+      shuffle(ok).slice(0,2).forEach(c=>{c.sabUntil=S.day+3;feed('bad',`🚫 ${c.name} bị phá hoại`);});}},
+    {t:`CƯỚP BÓC: −${40+10*w} cho mọi tài nguyên`,f:()=>RES.forEach(r=>gain(r,-(40+10*w),{silent:true}))},
+  ];
+  const p=rnd(pens);p.f();
+  const failedTxt=S.patch.req.txt;S.patch=null;
+  modal(`<h2>⛈️ THẤT BẠI SÓNG GIÓ</h2>
+    <p class="sub">Bạn đã không: <b>${failedTxt}</b></p>
+    <p style="font-size:16px;font-weight:800;color:#f85149">${p.t}</p>
+    <div class="choices"><button class="opt" onclick="step()"><b>CHỊU THÔI</b></button></div>`,'warn');
+}
+
+/* a currency readout for any modal that lets you spend it (top bar is hidden behind the modal) */
+const curLine=()=>`💰 TIỀN: <b style="color:var(--cur)">${S.res.cur}</b>`;
+
+/* ================= END-OF-DAY CHOICE: PICK / BUY / BUNDLE ================= */
+function stepDayChoice(){
+  modal(`<h2>🌙 CUỐI NGÀY ${S.day}</h2><p class="sub">${curLine()}, chọn một:</p>
+    <div class="choices">
+      <button class="opt" onclick="doPick()"><span class="big">🃏</span><b>NHẬN THẺ</b><small>một lá ngẫu nhiên, nhận hoặc trả tiền đổi lá khác</small></button>
+      <button class="opt" onclick="doMarket()"><span class="big">⚖️</span><b>MUA TÀI NGUYÊN</b><small>đổi TIỀN lấy tài nguyên, hoặc bán tài nguyên</small></button>
+      <button class="opt" onclick="doBundle()"><span class="big">🧬</span><b>GHÉP THẺ</b><small>gộp 2 lá, xem trước khi chốt</small></button>
+    </div>`);
+}
+
+/* ---- PICK ---- */
+let _pick=null;
+function poolCard(){
+  const own=STYLES[S.style].pool;
+  const k=Math.random()<0.6?rnd(own):rnd(NEUTRALS);
+  return LIB[k]();
+}
+function pickRefreshCost(){return price((15+10*wk())*2*(S.refToday+1));}
+function doPick(){_pick=poolCard();renderPick();}
+function renderPick(){
+  modal(`<h2>🃏 NHẬN THẺ</h2><p class="sub">${curLine()}, nhận (vào chồng BỎ) hoặc trả tiền để đổi.</p>
+    <div class="choices">
+      <button class="opt" onclick="pickTake()"><span class="big">${_pick.icon}</span><b>${_pick.name}</b><small>${cardText(_pick)}</small>
+        <div class="price">✔ NHẬN, MIỄN PHÍ</div></button>
+    </div><br>
+    <div class="choices">
+      <button class="opt sec" ${S.res.cur<pickRefreshCost()?'disabled':''} onclick="pickRefresh()"><b>🔄 ĐỔI LÁ</b><small>${pickRefreshCost()} TIỀN</small></button>
+      <button class="opt sec" onclick="step()"><b>BỎ QUA</b></button>
+    </div>`);
+}
+function pickTake(){addCard(_pick);step();}
+function pickRefresh(){
+  const c=pickRefreshCost();
+  if(S.res.cur<c)return;
+  gain('cur',-c,{silent:true});S.refToday++;
+  _pick=poolCard();renderPick();
+}
+function addCard(c){
+  S.discPile.push(c);
+  if(S.patch&&!S.patch.done)S.patch.adds++;
+  feed('ev',`＋ ${c.name} gia nhập bộ bài`);
+  checkPatch();
+}
+
+/* ---- MARKET ---- */
+const BUY10=12,SELL10=7;
+function doMarket(){renderMarket();}
+function renderMarket(){
+  const b=price(BUY10);
+  const row=r=>`<div style="display:flex;gap:10px;align-items:center;justify-content:center;margin:8px 0">
+    <b style="width:110px;text-align:right;color:var(--${r})">${RN[r]}</b>
+    <b style="width:60px">${S.res[r]}</b>
+    <button class="opt" style="flex:0;min-width:130px" ${S.res.cur<b?'disabled':''} onclick="mktBuy('${r}')"><b>MUA +10</b><small>−${b} TIỀN</small></button>
+    <button class="opt" style="flex:0;min-width:130px" ${S.res[r]<10?'disabled':''} onclick="mktSell('${r}')"><b>BÁN −10</b><small>+${SELL10} TIỀN</small></button>
+  </div>`;
+  modal(`<h2>⚖️ CHỢ TÀI NGUYÊN</h2><p class="sub">TIỀN: <b style="color:var(--cur)">${S.res.cur}</b>, mua bán thoải mái rồi rời đi.</p>
+    ${row('mat')}${row('man')}
+    <p class="sub" style="margin-top:10px">${S.style==='bleed'?'🩸 bán NHÂN LỰC sẽ nạp cho CỖ MÁY.':''}</p>
+    <div class="choices"><button class="opt" onclick="step()"><b>XONG</b></button></div>`);
+}
+function mktBuy(r){const b=price(BUY10);if(S.res.cur<b)return;
+  gain('cur',-b,{silent:true});gain(r,10,{raw:true,silent:true});renderMarket();render();}
+function mktSell(r){if(S.res[r]<10)return;
+  gain(r,-10,{silent:true});gain('cur',SELL10,{raw:true,silent:true});renderMarket();render();}
+
+/* ---- BUNDLE (pick 1st → pick 2nd → PREVIEW & confirm; order of effects matters) ---- */
+let _bunA=null,_bunB=null;
+function doBundle(){
+  const ok=allCards();
+  if(ok.length<2){feed('bad','cần 2 lá để ghép');stepDayChoice();return;}
+  _bunA=null;_bunB=null;renderBundle(ok,'Chọn lá thứ 1');
+}
+function renderBundle(ok,title){
+  modal(`<h2>🧬 GHÉP THẺ${_bunA?` · Lá 1 = ${_bunA.icon} ${_bunA.name}`:''}</h2>
+    <p class="sub">${title}. Cùng hiệu ứng: cấp gộp lại (0→tổng+1 · 1→tổng · còn lại NHÂN, tối đa 256). Hiệu ứng khác nhau sẽ xếp <b>theo thứ tự</b>, bạn sẽ xem trước khi chốt.</p>
+    <div class="grid4">`+
+    ok.map(c=>`<button class="opt" onclick="bundlePick(${c.uid})"><span class="big">${c.icon}</span><b>${c.name}</b><small>${cardText(c)}</small></button>`).join('')+
+    `</div><br><div class="choices"><button class="opt sec" onclick="stepDayChoice()"><b>← QUAY LẠI</b></button></div>`);
+}
+function bundlePick(uid){
+  const c=allCards().find(x=>x.uid===uid);
+  if(!_bunA){_bunA=c;renderBundle(allCards().filter(x=>x.uid!==uid),'Chọn lá thứ 2 (hiệu ứng gộp vào lá 1)');return;}
+  _bunB=c;bundleConfirm();
+}
+function bundleConfirm(){
+  const a=_bunA,b=_bunB;
+  const f=mergeCards(a,b); // preview only, mergeCards copies, never mutates a/b
+  const dest=pileOf(b.uid);
+  const where=dest===S.hand?'TAY BÀI':dest===S.drawPile?'BỘ BÀI':'chồng BỎ';
+  const leaves=cardLeaves(f).map((l,i)=>
+    `<div style="text-align:left;padding:2px 0">${i+1}. ${l.icon||''} ${leafText(l)}${(l.lvl||0)?` <span style="color:#4a86c4">[L${l.lvl}]</span>`:''}</div>`).join('');
+  modal(`<h2>🧬 XÁC NHẬN GHÉP</h2>
+    <p class="sub">${a.icon} ${a.name} <b>+</b> ${b.icon} ${b.name} → nằm ở <b>${where}</b> (vị trí lá thứ 2). Hiệu ứng chạy từ trên xuống:</p>
+    <div class="opt" style="max-width:380px;margin:0 auto;cursor:default;border-color:var(--bund)">
+      <div class="big">${f.icon}</div><b>${f.name}</b>
+      <div style="margin-top:8px;font-size:12px;line-height:1.5;color:#c9d1d9">${leaves}</div>
+    </div><br>
+    <div class="choices">
+      <button class="opt" onclick="bundleDo()"><b>✔ CHỐT</b></button>
+      <button class="opt sec" onclick="bundleSwap()"><b>⇄ ĐẢO THỨ TỰ</b><small>đổi lá 1 ↔ lá 2</small></button>
+      <button class="opt sec" onclick="doBundle()"><b>✕ LÀM LẠI</b></button>
+    </div>`,'');
+}
+function bundleSwap(){const t=_bunA;_bunA=_bunB;_bunB=t;bundleConfirm();}
+function bundleDo(){
+  const a=_bunA,b=_bunB;_bunA=null;_bunB=null;
+  const f=mergeCards(a,b);
+  removeCard(a);
+  const bp=pileOf(b.uid)||S.discPile; // lands on the 2nd card's spot, no free draw
+  const bi=bp.findIndex(x=>x.uid===b.uid);
+  if(bi>=0)bp.splice(bi,1,f); else bp.push(f);
+  if(bp===S.hand)f._deal=true;
+  S.stats.bundles++;
+  feed('ev',`🧬 Đã ghép ${f.name}!`);
+  render();step();
+}
+function pileOf(uid){
+  return [S.hand,S.drawPile,S.discPile].find(p=>p.some(x=>x.uid===uid))||null;
+}
+function removeCard(c){
+  [S.hand,S.drawPile,S.discPile].forEach(p=>{
+    const i=p.findIndex(x=>x.uid===c.uid);if(i>=0)p.splice(i,1);});
+}
+
+/* ================= SHOP (every 3 days, before end-of-day choice) ================= */
+const shopCardCost=()=>price(15+3*wk());
+const shopBundleCost=()=>price(35+4*S.day/5);
+const shopPolCost=()=>price(50+5*wk());
+const shopPackCost=()=>price(30+5*wk());
+const shopRefreshCost=()=>price(10+10*S.day/5);
+const shopDestroyCost=()=>price((25+10*wk())*2*(S.desToday+1));
+function genShop(){
+  const polPool=POLICIES.filter(p=>!p.deck||p.deck===S.style);
+  S.shop={cards:[poolCard(),poolCard()],bundle:mkShopBundle(),
+    pols:shuffle(polPool.slice()).slice(0,2),pack:rnd(Object.keys(STYLES)),bought:{}};
+}
+function mkShopBundle(){
+  const k=Math.max(2,Math.ceil(1+wk()));
+  let f=poolCard();
+  for(let i=1;i<k;i++)f=mergeCards(f,poolCard());
+  return f;
+}
+function stepShopOpen(){genShop();renderShop();}
+function renderShop(){
+  const sh=S.shop,B=sh.bought;
+  const item=(key,icon,name,desc,cost,fn,cls,tag)=>
+    `<button class="opt ${cls||''}" ${B[key]||S.res.cur<cost?'disabled':''} onclick="${fn}">
+      ${tag?`<div class="shoptag">${tag}</div>`:''}
+      <span class="big">${icon}</span><b>${B[key]?'ĐÃ BÁN':name}</b><small>${desc}</small>
+      <div class="price">${cost} TIỀN</div></button>`;
+  const polItem=(key,p,fn)=>item(key,p.icon,p.name,p.text+(polN(p.id)?` (đang có ×${polN(p.id)}, CỘNG DỒN)`:''),shopPolCost(),fn,'polopt','📜 CHÍNH SÁCH');
+  modal(`<h2>🛒 NHÀ CUNG CẤP</h2><p class="sub">Ngày ${S.day}, TIỀN: <b style="color:var(--cur)">${S.res.cur}</b>${polN('pol_disc')?` · Vận động HL −${Math.round((1-shopDisc())*100)}%`:''}</p>
+    <div class="grid3">`+
+    item('c0',sh.cards[0].icon,sh.cards[0].name,cardText(sh.cards[0]),shopCardCost(),'shopBuyCard(0)',null,'THẺ')+
+    item('c1',sh.cards[1].icon,sh.cards[1].name,cardText(sh.cards[1]),shopCardCost(),'shopBuyCard(1)',null,'THẺ')+
+    item('bn',sh.bundle.icon,sh.bundle.name,cardText(sh.bundle),shopBundleCost(),'shopBuyBundle()','bundleopt','🧬 GHÉP')+
+    polItem('p0',sh.pols[0],'shopBuyPol(0)')+
+    polItem('p1',sh.pols[1],'shopBuyPol(1)')+
+    item('pk',STYLES[sh.pack].icon,'GÓI '+STYLES[sh.pack].name,'3 lá ngẫu nhiên từ deck này vào bộ của bạn',shopPackCost(),'shopBuyPack()','packopt','📦 GÓI')+
+    `</div><br><div class="choices">
+    <button class="opt sec" ${S.res.cur<shopRefreshCost()?'disabled':''} onclick="shopRefresh()"><b>🔄 ĐỔI HÀNG</b><small>${shopRefreshCost()} TIỀN</small></button>
+    <button class="opt sec" ${S.res.cur<shopDestroyCost()||allCards().length<2?'disabled':''} onclick="shopDestroy()"><b>🗑 HỦY 1 THẺ</b><small>${shopDestroyCost()} TIỀN</small></button>
+    <button class="opt" onclick="step()"><b>RỜI ĐI ▶</b></button></div>`,'shop');
+}
+function shopPay(c){gain('cur',-c,{silent:true});render();}
+function shopBuyCard(i){const c=shopCardCost();if(S.res.cur<c||S.shop.bought['c'+i])return;
+  shopPay(c);S.shop.bought['c'+i]=1;addCard(S.shop.cards[i]);renderShop();}
+function shopBuyBundle(){const c=shopBundleCost();if(S.res.cur<c||S.shop.bought.bn)return;
+  shopPay(c);S.shop.bought.bn=1;addCard(S.shop.bundle);renderShop();}
+function shopBuyPol(i){const c=shopPolCost();if(S.res.cur<c||S.shop.bought['p'+i])return;
+  shopPay(c);S.shop.bought['p'+i]=1;
+  const p=S.shop.pols[i];S.policies[p.id]=(S.policies[p.id]||0)+1;
+  feed('day',`📜 BAN HÀNH CHÍNH SÁCH: ${p.name}${S.policies[p.id]>1?' ×'+S.policies[p.id]:''}`);renderShop();}
+function shopBuyPack(){const c=shopPackCost();if(S.res.cur<c||S.shop.bought.pk)return;
+  shopPay(c);S.shop.bought.pk=1;
+  const st=STYLES[S.shop.pack];
+  for(let i=0;i<3;i++)addCard(LIB[rnd(st.pool)]());
+  feed('day',`📦 GÓI ${st.name}: +3 lá`);renderShop();}
+function shopRefresh(){const c=shopRefreshCost();if(S.res.cur<c)return;
+  shopPay(c);genShop();renderShop();}
+function shopDestroy(){
+  modal(`<h2>🗑 HỦY 1 THẺ</h2><p class="sub">${curLine()}, trả ${shopDestroyCost()} TIỀN, mất vĩnh viễn. Giá gấp đôi mỗi lần hủy trong ngày.</p>
+    <div class="grid4">`+
+    allCards().map(c=>`<button class="opt" onclick="shopDestroyPick(${c.uid})"><span class="big">${c.icon}</span><b>${c.name}</b><small>${cardText(c)}</small></button>`).join('')+
+    `</div><br><div class="choices"><button class="opt sec" onclick="renderShop()"><b>← QUAY LẠI</b></button></div>`,'shop');
+}
+function shopDestroyPick(uid){
+  const cost=shopDestroyCost();
+  if(S.res.cur<cost)return;
+  const c=allCards().find(x=>x.uid===uid);if(!c)return;
+  shopPay(cost);S.desToday++;removeCard(c);
+  feed('bad',`🗑 Đã hủy ${c.name}`);renderShop();render();
+}
+
+/* ================= WIN / LOSE ================= */
+function win(){
+  S.over=true;Q=[];recordRun(true);
+  modal(`<div class="endt">👑🏢</div><h2>ĐẾ CHẾ</h2>
+    <p class="sub">ĐIỂM XẾP HẠNG <b style="color:var(--cap)">${S.cap}</b>, cán mốc 5555 vào NGÀY ${S.day}.<br>
+    ${S.stats.played} thẻ chơi · ${S.stats.drawn} rút · ${S.stats.bundles} ghép · bộ ${allCards().length} thẻ</p>
+    <p class="sub" style="color:var(--man);max-width:460px;margin:0 auto">Nhưng đế chế này xây trên lưng những con người: <b>lợi nhuận bằng mọi giá, không một chút trách nhiệm xã hội</b>. Đó chính là thứ mà nền kinh tế thị trường <i>định hướng XHCN</i> muốn điều tiết.</p>
+    <div class="choices">
+      <button class="opt" onclick="newGame()"><b>CHƠI LẠI ↺</b></button>
+      <button class="opt sec" onclick="showLeaderboard()"><b>🏆 BXH</b></button>
+    </div>`,'good');
+}
+function lose(why){
+  S.over=true;Q=[];recordRun(false);
+  modal(`<div class="endt">🪦</div><h2>PHÁ SẢN</h2>
+    <p class="sub">${why}</p>
+    <p class="sub">ĐIỂM XẾP HẠNG ${S.cap} / 5555 · gục ngày ${S.day} · ${S.stats.played} thẻ đã chơi</p>
+    <div class="choices">
+      <button class="opt" onclick="newGame()"><b>THỬ LẠI ↺</b></button>
+      <button class="opt sec" onclick="showLeaderboard()"><b>🏆 BXH</b></button>
+    </div>`,'warn');
+}
+
+/* ================= PERSONAL LEADERBOARD (localStorage, no backend, works on GitHub Pages) ================= */
+const LB_KEY='vet_group_lb_v1', NAME_KEY='vet_group_name';
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function lbName(){try{return localStorage.getItem(NAME_KEY)||'Player';}catch(e){return'Player';}}
+function lbLoad(){try{return JSON.parse(localStorage.getItem(LB_KEY))||[];}catch(e){return[];}}
+function lbSave(a){try{localStorage.setItem(LB_KEY,JSON.stringify(a));}catch(e){}}
+/* rank: wins first, then higher CAPITAL, then fewer days, then most recent */
+function lbRank(a){return a.slice().sort((x,y)=>(y.win-x.win)||(y.cap-x.cap)||(x.day-y.day)||(y.t-x.t));}
+function recordRun(won){
+  const runs=lbLoad();
+  runs.push({name:lbName(),style:STYLES[S.style]?STYLES[S.style].name:'-',cap:S.cap,day:S.day,
+    win:won?1:0,played:S.stats.played,t:Date.now()});
+  lbSave(lbRank(runs).slice(0,50)); // keep the best 50, bound storage
+}
+function showLeaderboard(){
+  const runs=lbRank(lbLoad());
+  const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+  const rows=runs.length?runs.slice(0,15).map((r,i)=>
+    `<div style="display:flex;gap:10px;align-items:center;padding:7px 12px;border:1px solid var(--line);
+       border-radius:10px;margin:5px 0;background:${r.win?'#0e1f14':'var(--panel2)'}">
+       <b style="width:40px;text-align:center">${medal(i)}</b>
+       <span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+         ${r.win?'👑':'💀'} <b>${escapeHtml(r.name)}</b> <span style="color:var(--dim)">· ${r.style}</span></span>
+       <b style="color:var(--cap);width:64px;text-align:right">${r.cap}</b>
+       <span style="color:var(--dim);width:60px;text-align:right">day ${r.day}</span>
+     </div>`).join(''):'<p class="sub">Chưa có lượt chơi nào, mọi ván thắng/thua đều được ghi lại tại đây.</p>';
+  modal(`<h2>🏆 BẢNG XẾP HẠNG CÁ NHÂN</h2>
+    <p class="sub">Lưu ngay trên trình duyệt của bạn (localStorage) · xếp hạng: THẮNG → ĐIỂM cao → ít ngày hơn.</p>
+    <div style="max-width:540px;margin:0 auto">${rows}</div>
+    <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:16px;flex-wrap:wrap">
+      <input id="lbname" maxlength="14" value="${escapeHtml(lbName())}" placeholder="Tên của bạn"
+        style="background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;
+        padding:9px 12px;font-family:inherit;font-weight:700;width:160px;text-align:center">
+      <button class="opt" style="flex:0;min-width:120px" onclick="lbSetName()"><b>💾 LƯU TÊN</b></button>
+    </div>
+    <div class="choices" style="margin-top:12px">
+      <button class="opt sec" style="flex:0;min-width:150px" onclick="lbClear()"><b>🗑 XÓA BXH</b></button>
+      <button class="opt" style="flex:0;min-width:150px" onclick="closeModal()"><b>ĐÓNG</b></button>
+    </div>`,'');
+}
+function lbSetName(){
+  const el=$('lbname');const v=((el&&el.value)||'').trim().slice(0,14)||'Player';
+  try{localStorage.setItem(NAME_KEY,v);}catch(e){}
+  feed('day',`✎ tên đã lưu: ${v}`);showLeaderboard();
+}
+function lbClear(){if(confirm('Xóa toàn bộ bảng xếp hạng trên máy này?')){lbSave([]);showLeaderboard();}}
+
+/* ================= UI ================= */
+function modal(html,cls){
+  modalOpen=true;
+  const sh=$('sheet');sh.className='sheet'+(cls?' '+cls:'');sh.innerHTML=html;
+  $('modal').classList.add('on');
+  $('endday').disabled=true;
+}
+function closeModal(){modalOpen=false;$('modal').classList.remove('on');$('endday').disabled=!!S.over;}
+function feed(cls,txt){
+  const f=$('feed'),d=document.createElement('div');
+  d.className=cls;d.textContent=txt;f.prepend(d);
+  while(f.children.length>26)f.lastChild.remove();
+}
+function spawnFloat(id,txt,color){
+  const el=(typeof id==='string')?$(id):id;if(!el||!el.getBoundingClientRect)return;
+  const r=el.getBoundingClientRect();
+  const d=document.createElement('div');
+  d.className='float';d.textContent=txt;d.style.color=color;
+  d.style.left=(r.left+r.width/2-20+Math.random()*40)+'px';
+  d.style.top=(r.top+r.height/2)+'px';
+  document.body.appendChild(d);setTimeout(()=>d.remove(),1100);
+}
+/* a policy did something this turn, pulse its chip, float the effect, log it */
+function firePolicy(id,short){
+  const p=POLICIES.find(x=>x.id===id);if(!p)return;
+  const chip=document.querySelector(`[data-pol="${id}"]`);
+  if(chip){chip.classList.remove('polfire');void chip.offsetWidth;chip.classList.add('polfire');}
+  spawnFloat(chip||'pillrow',`${p.icon} ${short}`,'var(--cur)');
+  feed('ev',`${p.icon} ${p.name}: ${short}`);
+}
+function showPolicies(){
+  const owned=Object.keys(S.policies);
+  const counters=[
+    `⚡ NĂNG LƯỢNG ${S.stack}`,
+    S.style==='bleed'?`🩸 CỖ MÁY ${S.bm}`:'',
+    S.style==='bleed'?`🩸 NL ĐÃ DÙNG ${S.stackLost||0}`:'',
+    S.style==='singularity'?`⚛️ LINH KIỆN ${S.parts}/${sinNeed()} · 🕳️ BƯỚC NHẢY ${S.sinBuilt}`:'',
+    `HIỆU SUẤT ${Math.round(gainOut()*100)}%`,
+  ].filter(Boolean).join(' · ');
+  modal(`<h2>📜 CHÍNH SÁCH ĐANG ÁP DỤNG</h2>
+    <p class="sub">${STYLES[S.style].passive}</p>
+    <p class="sub" style="color:var(--text)">${counters}</p>
+    <div class="choices">`+
+    (owned.length?owned.map(id=>{const p=POLICIES.find(x=>x.id===id);
+      return `<div class="opt polopt" style="cursor:default"><div class="shoptag">📜 ×${S.policies[id]}</div><span class="big">${p.icon}</span><b>${p.name}</b><small>${p.text}</small></div>`;}).join(''):
+      '<p class="sub">chưa có, nhà cung cấp bán mỗi 3 ngày</p>')+
+    `</div><br><div class="choices"><button class="opt" onclick="closeModal()"><b>ĐÓNG</b></button></div>`);
+}
+function showHelp(){
+  modal(`<h2>❓ CÁCH CHƠI · ĐẾ CHẾ</h2>
+    <div style="text-align:left;font-size:13px;line-height:1.7;color:#c9d1d9">
+    <b style="color:var(--cap)">MỤC TIÊU:</b> đưa ĐIỂM XẾP HẠNG qua 5 → 55 → 555 → <b>5555</b>. Mỗi mốc thưởng +100 cho mọi tài nguyên. Đạt <b>5555</b> là THẮNG, cả 3 deck đều chơi được ngay từ đầu.<br>
+    <b style="color:var(--cur)">THẺ BÀI MIỄN PHÍ.</b> <b>Kéo một lá lên bàn</b> để chơi. Bạn rút từ BỘ BÀI lên TAY; lá đã chơi vào chồng BỎ. Trong ngày không rút từ chồng BỎ, hết bài thì thôi. Chồng BỎ chỉ xáo lại vào BỘ BÀI ở ĐẦU NGÀY. Tay bài giữ qua đêm nhưng mỗi sáng chỉ giữ lại tối đa 10 lá ngẫu nhiên. Hết bài trên tay thì ngày tự kết thúc.<br>
+    <b>MỖI NGÀY:</b> rút 2 · 30%+ khả năng có SỰ KIỆN · buổi tối chọn NHẬN THẺ / MUA TÀI NGUYÊN / GHÉP THẺ.<br>
+    <b>MỖI 3 NGÀY:</b> 🛒 nhà cung cấp, thẻ, thẻ ghép sẵn, CHÍNH SÁCH (nội tại cộng dồn), gói deck, hủy thẻ.<br>
+    <b style="color:#f85149">MỖI 7 NGÀY:</b> 📉 CHI PHÍ BÀNH TRƯỚNG, <b>một khoản trừ vào mọi tài nguyên</b>: phần cố định (25×1.25^(tuần−1)) cộng phần theo tài sản (~24% → 60%) tính trên <b>ĐỈNH của tài nguyên cao nhất</b>. Dồn hết vào một loại thì các loại kia phải trả, hãy giữ cân bằng. Đỉnh chỉ tăng (tiêu bớt không né được), và tài nguyên dưới 0 sẽ vào KHỦNG HOẢNG.<br>
+    <b style="color:#f85149">KHỦNG HOẢNG:</b> tài nguyên dưới 0 = bị phạt mỗi ngày. 3+ ngày khủng hoảng đúng kỳ chi phí bành trướng là thua. Ngoài ra không gì giết được bạn.<br>
+    <b>MỖI 14 NGÀY:</b> ⛈️ SÓNG GIÓ, đáp ứng yêu sách trong 3 ngày hoặc lãnh phạt.<br>
+    <b style="color:var(--stack)">GHÉP THẺ:</b> gộp 2 lá. Cùng hiệu ứng: cấp 0→tổng+1, 1→tổng, còn lại <b>NHÂN</b> (L4×L5=L20, tối đa 256). Cấp làm mạnh mọi (+X) trên lá. Đây là cách để số nổ to.</div>
+    <br><div class="choices"><button class="opt" onclick="closeModal()"><b>TRỞ LẠI LÀM VIỆC</b></button></div>`);
+}
+
+const TYPEVN={Gain:'THU',Convert:'CHUYỂN',Special:'ĐẶC BIỆT',Capital:'ĐIỂM',Bundle:'GHÉP'};
+function cardClass(c){
+  const sab=c.sabUntil&&c.sabUntil>S.day;
+  return `card t-${c.type}${sab?' sab':''}`;
+}
+function cardInner(c){
+  const sab=c.sabUntil&&c.sabUntil>S.day;
+  const topLvl=!c.fused&&(c.lvl||0)>0?`<span class="lvb">L${c.lvl}</span>`:'';
+  const artSize=c.fused?Math.max(16,40-6*(c.fused.length-1)):40;
+  return `<span class="tyb">${TYPEVN[c.type]||c.type.toUpperCase()}</span>${topLvl}
+    ${sab?`<span class="sabb">PHÁ HOẠI</span>`:''}
+    <div class="art" style="font-size:${artSize}px">${c.icon}</div>
+    <div class="nm">${c.name}</div>
+    <div class="ef">${cardText(c)}</div>
+    <div class="kwl">${c.kw||''}</div>`;
+}
+function cardEl(c){ // used by non-hand callers / sim
+  const d=document.createElement('div');
+  d.className=cardClass(c);d.innerHTML=cardInner(c);
+  d.dataset.uid=c.uid;
+  d.addEventListener('pointerdown',e=>dragStart(e,c.uid));
+  return d;
+}
+
+/* ================= DRAG-TO-PLAY ================= */
+let _drag=null;
+const overBoard=(x,y)=>{const r=$('board').getBoundingClientRect();
+  return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;};
+function dragStart(e,uid){
+  if(S.over||modalOpen)return;
+  const c=S.hand.find(x=>x.uid===uid);if(!c)return;
+  if(c.sabUntil&&c.sabUntil>S.day){feed('bad',`🚫 ${c.name} đang bị PHÁ HOẠI (đến ngày ${c.sabUntil})`);return;}
+  const el=e.currentTarget,r=el.getBoundingClientRect();
+  _drag={uid,el,sx:e.clientX,sy:e.clientY,ox:e.clientX-r.left,oy:e.clientY-r.top,w:r.width,h:r.height,active:false};
+  window.addEventListener('pointermove',dragMove);
+  window.addEventListener('pointerup',dragEnd);
+  e.preventDefault();
+}
+function dragMove(e){
+  if(!_drag)return;
+  if(!_drag.active){
+    if(Math.abs(e.clientX-_drag.sx)+Math.abs(e.clientY-_drag.sy)<7)return;
+    _drag.active=true;_drag.el.classList.add('drag');
+  }
+  _drag.el.style.left=(e.clientX-_drag.ox)+'px';
+  _drag.el.style.top=(e.clientY-_drag.oy)+'px';
+  _drag.el.style.width=_drag.w+'px';_drag.el.style.height=_drag.h+'px';
+  $('board').classList.toggle('drop',overBoard(e.clientX,e.clientY));
+}
+function dragEnd(e){
+  window.removeEventListener('pointermove',dragMove);
+  window.removeEventListener('pointerup',dragEnd);
+  const d=_drag;_drag=null;if(!d)return;
+  $('board').classList.remove('drop');
+  const el=d.el;
+  el.classList.remove('drag');
+  el.style.left=el.style.top=el.style.width=el.style.height='';
+  if(d.active&&overBoard(e.clientX,e.clientY))playCard(d.uid,{left:e.clientX-d.w/2,top:e.clientY-d.h/2,width:d.w,height:d.h});
+  else render(); // snap back into the fan
+}
+const fanT=(i,n)=>`rotate(${(i-(n-1)/2)*2.2}deg) translateY(${Math.abs(i-(n-1)/2)*4}px)`;
+/* diff-based hand render: reuse elements so cards slide, deal new ones in, fly gone ones out */
+function renderHand(){
+  const h=$('hand');if(!h||!h.querySelectorAll)return;
+  const byUid={};h.querySelectorAll('.card').forEach(el=>byUid[el.dataset.uid]=el);
+  const wanted=new Set(S.hand.map(c=>String(c.uid)));
+  h.querySelectorAll('.card').forEach(el=>{if(!wanted.has(el.dataset.uid))el.remove();});
+  const n=S.hand.length,dealt=[];
+  S.hand.forEach((c,i)=>{
+    let el=byUid[String(c.uid)];
+    if(!el){
+      el=cardEl(c);
+      if(c._deal){el.classList.add('dealing');dealt.push(el);c._deal=false;}
+      h.appendChild(el);
+    }else{
+      if(el.className!==cardClass(c))el.className=cardClass(c);
+      el.innerHTML=cardInner(c);
+      if(h.children[i]!==el)h.insertBefore(el,h.children[i]||null);
+    }
+    el.style.zIndex=i;
+    el.style.transform=fanT(i,n);
+  });
+  if(dealt.length)requestAnimationFrame(()=>requestAnimationFrame(()=>
+    dealt.forEach((el,k)=>{el.style.transitionDelay=(k*55)+'ms';
+      el.classList.remove('dealing');
+      setTimeout(()=>{el.style.transitionDelay='';},600+k*55);})));
+}
+/* a card-sized ghost that flies from where the card sat to a pile, then fades */
+function flyToPile(fromRect,icon,pileId){
+  if(!fromRect||!fromRect.width)return;
+  const pile=$(pileId);if(!pile||!pile.getBoundingClientRect)return;
+  const to=pile.getBoundingClientRect();
+  const g=document.createElement('div');g.className='flyghost';g.textContent=icon;
+  g.style.left=fromRect.left+'px';g.style.top=fromRect.top+'px';
+  g.style.width=fromRect.width+'px';g.style.height=fromRect.height+'px';
+  document.body.appendChild(g);
+  requestAnimationFrame(()=>{
+    g.style.left=(to.left+to.width/2-32)+'px';
+    g.style.top=(to.top+to.height/2-45)+'px';
+    g.style.width='64px';g.style.height='90px';
+    g.style.opacity='0';g.style.transform='rotate(-14deg) scale(.55)';
+  });
+  setTimeout(()=>g.remove(),520);
+  pile.classList.remove('bump');void pile.offsetWidth;pile.classList.add('bump');
+}
+function celebrate(m){
+  const b=$('msbanner');if(!b)return;
+  b.firstElementChild.textContent=m;
+  b.classList.remove('go');void b.offsetWidth;b.classList.add('go');
+  const el=$('capnum');el.classList.remove('milestone');void el.offsetWidth;el.classList.add('milestone');
+}
+function render(){
+  if(!S||!S.style)return;
+  RES.forEach(r=>{
+    $('v-'+r).textContent=S.res[r];
+    $('p-'+r).classList.toggle('neg',S.res[r]<0);
+  });
+  /* deduction preview under each resource (adaptive: depends on current holdings) */
+  const nk=S.dedCount+1;
+  const until=(7-(S.day%7))%7;
+  RES.forEach(r=>{$('d-'+r).textContent=`−${dedFor(r,nk)} ${until===0?'tối nay':'còn '+until+' ngày'}`;});
+  $('capnum').textContent=S.cap;
+  const prev=S.msIdx>0?MS[S.msIdx-1]:0,next=MS[Math.min(S.msIdx,MS.length-1)];
+  $('goalline').textContent=S.msIdx>=MS.length?'HOÀN THÀNH':`MỐC TIẾP THEO ${next}`;
+  $('capbar').firstElementChild.style.width=Math.min(100,100*(S.cap-prev)/(next-prev))+'%';
+  $('dayline').textContent=`Ngày ${S.day} · tuần ${Math.floor((S.day-1)/7)+1}`;
+  $('styleline').textContent=STYLES[S.style].passive;
+  const crisis=RES.some(r=>S.res[r]<0);
+  const st=$('stateline');
+  st.className=crisis?'crisis':'';
+  st.textContent=crisis?`🚨 KHỦNG HOẢNG, ngày ${S.crisisDays} (3+ đúng kỳ chi phí là thua)`:
+    `khả năng có sự kiện ngày mai ${Math.round(S.evCh*100)}%`;
+  /* pills */
+  const pr=$('pillrow');pr.innerHTML='';
+  const pill=(cls,txt,click)=>{const s=document.createElement('span');s.className='pill '+cls;
+    s.innerHTML=txt;if(click)s.onclick=click;pr.appendChild(s);};
+  if(S.stack>0||S.style==='bleed')pill('stack',`⚡ NĂNG LƯỢNG ${S.stack}`);
+  if(S.style==='bleed')pill('bm',`🩸 CỖ MÁY ${S.bm}`);
+  if(S.style==='singularity')pill('sin',`⚛️ LINH KIỆN ${S.parts}/${sinNeed()} · 🕳️ BƯỚC NHẢY ${S.sinBuilt}`);
+  if(gainOut()!==1)pill('go',`HIỆU SUẤT ${Math.round(gainOut()*100)}%`);
+  /* policy strip: one hoverable chip per owned policy (click any → full list) */
+  const owned=Object.keys(S.policies);
+  const wrap=document.createElement('span');wrap.className='pill pol';wrap.onclick=showPolicies;
+  wrap.innerHTML=`📜 <span style="opacity:.7">CHÍNH SÁCH</span> `+
+    (owned.length?owned.map(id=>{const p=POLICIES.find(x=>x.id===id),n=S.policies[id];
+      return `<span class="polchip" data-pol="${id}" title="${p.name}${n>1?' ×'+n:''}, ${p.text}">${p.icon}${n>1?`<sup>${n}</sup>`:''}</span>`;}).join('')
+      :'<span style="opacity:.6">chưa có, mua ở nhà cung cấp</span>');
+  pr.appendChild(wrap);
+  if(S.patch&&!S.patch.done)pill('patch',`⛈️ ${S.patch.req.txt}, trước ngày ${S.patch.deadline}`);
+  if(crisis)pill('crisis','🚨 KHỦNG HOẢNG');
+  /* hand + piles */
+  renderHand();
+  $('drawn').textContent=S.drawPile.length;
+  $('discn').textContent=S.discPile.length;
+  /* schedule */
+  const shopIn=(3-(S.day%3))%3,dedIn=(7-(S.day%7))%7,patchIn=(14-(S.day%14))%14;
+  const dedBill=`−${dedFlat(nk)}+${Math.round(dedTax(nk)*100)}%`;
+  $('sched').innerHTML=
+    `<b>TỐI NAY</b>: ${shopIn===0?'🛒 nhà cung cấp · ':''}nhận/mua/ghép${dedIn===0?' · 📉 CHI PHÍ BÀNH TRƯỚNG '+dedBill:''}<br>`+
+    `📉 chi phí bành trướng: ${dedIn===0?'tối nay':'còn '+dedIn+' ngày'} (${dedBill} mỗi loại)<br>`+
+    `🛒 nhà cung cấp: ${shopIn===0?'tối nay':'còn '+shopIn+' ngày'}<br>`+
+    `⛈️ sóng gió: ${S.patch&&!S.patch.done?'ĐANG DIỄN RA':patchIn===0?'hôm nay':'còn '+patchIn+' ngày'}<br>`+
+    `🃏 tay ${S.hand.length}/${HAND_CAP} (cắt bớt mỗi sáng)`;
+}
+
+newGame();
+</script>
+</body>
+</html>
